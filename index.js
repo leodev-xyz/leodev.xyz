@@ -300,6 +300,7 @@ fs.copySync("public/static", "dist/static");
 
 generate_markdown("index.md", "Home", "index.html");
 generate_markdown("license.md", "License", "license.html");
+generate_markdown("404.md", "404: Not Found", "404.html");
 
 // onetap
 //   V3
