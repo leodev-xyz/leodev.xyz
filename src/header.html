@@ -1,0 +1,25 @@
+<div class="flex gap-2 md:gap-4 w-full bg-gray-200 dark:bg-gray-900 px-2 md:px-4">
+    <a href="/index.html" title="idk, maybe add an image here?">Home</a>
+    <a href="/index.html#onetap-stuff">Onetap stuff</a>
+    <a href="/index.html#aimware-stuff">Aimware stuff</a>
+    <button class="ml-auto mr-2" title="Toggle between light and darkmode">
+    </button>
+    <script>
+        (function() {
+            const SUN = "☀️";
+            const MOON = "🌕";
+            const toggle = document.currentScript.previousElementSibling;
+            let is_dark = (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches));
+            toggle.innerHTML = is_dark ? MOON : SUN;
+            toggle.addEventListener("click", () => {
+                is_dark = !is_dark;
+                toggle.innerHTML = is_dark ? MOON : SUN;
+                if(is_dark)
+                    document.documentElement.classList.add("dark");
+                else
+                    document.documentElement.classList.remove("dark");
+                localStorage.theme = is_dark ? "dark" : "light"
+            })
+        })()
+    </script>
+</div>

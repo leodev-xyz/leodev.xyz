@@ -1,0 +1,9 @@
+{
+    "description": "rerun.md",
+    "files": [
+        "rerun.coffee"
+    ],
+    "settings": {
+        "bare": false
+    }
+}

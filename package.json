@@ -1,0 +1,28 @@
+{
+  "name": "leosite",
+  "version": "1.0.0",
+  "description": "Various stuff",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/jit": "^0.1.17",
+    "postcss": "^8.2.8",
+    "tailwindcss": "^2.0.4"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.2.5",
+    "coffeescript": "^2.5.1",
+    "deasync": "^0.1.21",
+    "file-size": "^1.0.0",
+    "fs-extra": "^9.1.0",
+    "handlebars": "^4.7.7",
+    "marked": "^2.0.1",
+    "postcss-cli": "^8.3.1",
+    "postcss-import": "^14.0.0",
+    "terser": "^5.6.1"
+  }
+}

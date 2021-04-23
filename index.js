@@ -1,0 +1,332 @@
+
+const fs = require("fs-extra");
+const handlebars = require("handlebars");
+const marked = require("marked");
+const path = require("path");
+const coffeescript = require("coffeescript");
+const crypto = require("crypto");
+const { minify } = require("terser");
+const deasync = require('deasync');
+const filesize = require('file-size');
+
+
+const builtin_doclinks = require("./doclinks.js");
+
+handlebars.registerPartial("head", fs.readFileSync("src/head.html").toString());
+handlebars.registerPartial("header", fs.readFileSync("src/header.html").toString());
+handlebars.registerPartial("footer", fs.readFileSync("src/footer.html").toString());
+
+handlebars.registerHelper("include_markdown", options => {
+    const markdown = marked(fs.readFileSync(`public/${options.hash.file}`).toString());
+    return `<div class="markdown">${markdown}</div>`;
+})
+
+const LICENSE_CORE = `(c) Copyright LeoDeveloper 2020 - ${new Date().getFullYear()}\nReleased under the MIT license at https://leodeveloper.pages.dev\nVisit https://leodeveloper.pages.dev/license.html for more information.`
+
+const LICENSES = {
+    ".js": `/*\n${LICENSE_CORE}\n*/\n\n`,
+    ".coffee": `###\n${LICENSE_CORE}\n###\n\n`,
+    ".lua": `--[[\n${LICENSE_CORE}\n]]\n\n`,
+    ".moon": `--[[\n${LICENSE_CORE}\n]]\n\n`,
+}
+
+
+let doclinks = {};
+let missinglinks = 0;
+let currentlyrendering = undefined;
+let header = undefined;
+let in_definition = 0;
+
+marked.use({renderer: {
+    codespan: code => {
+        if(!code.startsWith(":link:"))
+            return false;
+        const parts = code.split(":");
+        const id = parts.slice(2).join("-");
+        if(!doclinks)
+            return `<code>${parts[parts.length - 1]}</code>`;
+        if(!doclinks[id]) {
+            //if(missinglinks === -1)
+            //    throw new Error(`invalid link: ${id}`)
+            missinglinks++;
+            return false;
+        }
+        return `<a href="${doclinks[id]}"><code>${parts[parts.length - 1]}</code></a>`
+    },
+    strong: text => {
+        if(!text.startsWith(":link:") || !doclinks)
+            return false;
+        // this allows for links like ":link:someotherid:shown text"
+        const parts = text.split(":");
+        const id = parts.slice(2).join("-");
+        const name = parts[parts.length - 1].split(".");
+        doclinks[id] = `/${currentlyrendering}#${id}`
+        const prefix = (in_definition === 2 ? "</div>" : "") + `<a href="#${id}" class="anchor w-4 h-4 mr-1"><img class="inline w-4 h-4 invisible" src="/static/svg/anchor.svg"></img></a>`;
+        in_definition = 1;
+        if(name.length === 1)
+            return prefix + `<strong id="${id}">${name[0]}</strong>`;
+        return prefix + `<span id="${id}">${name.slice(0, -1).join(".")}.<strong>${name[name.length - 1]}</strong></span>`;
+    },
+    heading: (text, level) => {
+        if(level === 1)
+            header = text;
+        if(text.startsWith("</div>")) {
+            text = text.substr(6);
+            in_definition = 2;
+        }
+        if(in_definition === 2) {
+            in_definition = 0;
+            return `</div><h${level}>${text}</h${level}>`
+        }
+        in_definition = 0;
+        return `<h${level}>${text}</h${level}>`;
+    },
+    paragraph: string => {
+        if(in_definition === 1) {
+            in_definition++;
+            return `<p>${string}</p><div class="m-16">`
+        }
+        return false;
+    }
+}})
+
+const safemarked = (content, filename) => {
+    if(filename) {
+        currentlyrendering = filename;
+        if(!content)
+            content = fs.readFileSync(`public/${filename}`).toString();
+    } else
+        currentlyrendering = undefined;
+    in_definition = 0;
+    header = undefined;
+    return marked(content);
+}
+
+const generate_docs = (map, builtin_doclinks) => {
+    // reset everything
+    doclinks = Object.assign({}, builtin_doclinks);
+    missinglinks = 0;
+    const markdown = {};
+    const headers = {};
+    for(const input in map) {
+        markdown[input] = safemarked(fs.readFileSync(`public/${input}`).toString(), map[input]);
+        headers[input] = header;
+    }
+    // ok, some links were missing, but doclinks should be populated by now
+    if(missinglinks > 0) {
+        missinglinks = -1; // if any are still missing => error
+        for(const input in map) {
+            markdown[input] = safemarked(fs.readFileSync(`public/${input}`).toString(), map[input]);
+        }
+    }
+    const bare = handlebars.compile(fs.readFileSync("src/bare.hbs").toString());
+
+    for(const input in map) {
+        fs.writeFileSync(`dist/${map[input]}`, bare({
+            name: headers[input],
+            bare: `<div class="markdown">${markdown[input]}</div>`
+        }))
+    }
+
+    return markdown;
+}
+const generate_scripts = (where) => {
+    const scripts = fs.readdirSync(`public/${where}`);
+    const manifests = [];
+    for(const script of scripts) {
+        if(fs.existsSync(`public/${where}/${script}/manifest.json`)) {
+            manifests.push(JSON.parse(fs.readFileSync(`public/${where}/${script}/manifest.json`).toString()));
+            manifests[manifests.length - 1].id = script;
+        }
+    }
+
+    const markdown = [fs.readFileSync(`public/${where}.md`)];
+    for(const manifest of manifests) {
+        if(manifest.name) markdown.push(`\n## ${manifest.name}\n`);
+        if(manifest.description) markdown.push(fs.readFileSync(`public/${where}/${manifest.id}/${manifest.description}`));
+        if(manifest.version) {
+            fs.ensureDirSync(`dist/${where}/${manifest.id}`)
+            fs.writeFileSync(`dist/${where}/${manifest.id}/latest`, manifest.version);
+        }
+        if(manifest.files) {
+            markdown.push("\n\n");
+            markdown.push("|  Filename  |  Size  |  SHA256  |  MD5  |\n");
+            markdown.push("| ---------- | ------ | -------- | ----- |\n");
+            for(const file of manifest.files) {
+                const scripts = prepare_scripts(where, manifest.id, file, manifest.settings);
+                for(const script of scripts) {
+                    const filename = script[0];
+                    let content = script[1];
+                    if(LICENSES[path.extname(filename)])
+                        content = LICENSES[path.extname(filename)] + content;
+                    const sha256 = crypto.createHash("sha256").update(content).digest("hex");
+                    const md5 = crypto.createHash("md5").update(content).digest("hex");
+                    fs.ensureDirSync(`dist/${where}/${manifest.id}`);
+                    fs.writeFileSync(`dist/${where}/${manifest.id}/${filename}`, content);
+                    markdown.push(`|  [${filename}](/${where}/${manifest.id}/${filename})  |  ${filesize(content.length).human()}  |  \`${sha256}\`  |  \`${md5}\`  |\n`);
+                }
+                markdown.push("\n\n");
+            }
+        }
+    }
+
+    const bare = handlebars.compile(fs.readFileSync("src/bare.hbs").toString());
+
+    fs.writeFileSync(`dist/${where}.html`, bare({
+        name: "Scripts",
+        bare: `<div class="markdown">${safemarked(markdown.join(""))}</div>`
+    }))
+}
+const prepare_scripts = (where, scriptname, script, settings) => {
+    const scripts = [];
+    let source = fs.readFileSync(`public/${where}/${scriptname}/${script}`).toString();
+    if(path.extname(script) === ".coffee") {
+        scripts.push([script, source]);
+        script = script.substr(0, script.length - 7) + ".js";
+        source = coffeescript.compile(source, {bare: !settings || !('bare' in settings) ? true : settings.bare});
+    }
+    if(path.extname(script) === ".js") {
+        scripts.push([script, source]);
+        let minified;
+        // UGLY, thx terser for forcing promises, really horrible
+        minify(source, {ecma: 5, format: {ascii_only: true}}).then((res) => minified = res);
+        deasync.loopWhile(() => !minified);
+        scripts.push([script.substr(0, script.length - 3) + ".min.js", minified.code]);
+    }
+    return scripts;
+}
+
+const clean_link = (text) => text.replace(/`:link:([^`]+)`/g, (_, t) => t)
+
+const generate_snippets = (input, output, lang, scope) => {
+    const lines = fs.readFileSync(`public/${input}`).toString().split("\n");
+    const snippets = generate_snippet_ast(lines);
+
+    const snippetjson = {};
+    if(lang === "js" || lang === "lua") {
+        for(const snippet of snippets) {
+            if(snippet.function) {
+                snippetjson[snippet.name.replace(/[^a-zA-Z]/g, "")] = {
+                    prefix: clean_link(snippet.name + "(" + snippet.arguments.map((a) => a.join(": ")).join(", ") + ")" + (snippet.return ? ": " + snippet.return : "")),
+                    body: clean_link(snippet.name + "(" + snippet.arguments.map((a) => a[0]).join(", ") + ")"),
+                    description: clean_link(snippet.description).trim(),
+                    scope: scope.join(",")
+                }
+            } else {
+                snippetjson[snippet.name.replace(/[^a-zA-Z]/g, "")] = {
+                    prefix: clean_link(snippet.name + (snippet.return ? ": " + snippet.return : "")),
+                    body: clean_link(snippet.name),
+                    description: clean_link(snippet.description).trim(),
+                    scope: scope.join(",")
+                }
+            }
+        }
+    } else if(lang === "coffee" || lang === "moon") {
+        for(const snippet of snippets) {
+            if(snippet.function) {
+                snippetjson[snippet.name.replace(/[^a-zA-Z]/g, "")] = {
+                    prefix: clean_link(snippet.name + (snippet.arguments.length ? " " + snippet.arguments.map((a) => a.join(": ")).join(", ") : lang === "coffee" ? "()" : "!") + (snippet.return ? " -> " + snippet.return : "")),
+                    body: clean_link(snippet.name + (snippet.arguments.length ? " " + snippet.arguments.map((a) => a[0]).join(", ") : lang === "coffee" ? "()" : "!")),
+                    description: clean_link(snippet.description).trim(),
+                    scope: scope.join(",")
+                }
+            } else {
+                snippetjson[snippet.name.replace(/[^a-zA-Z]/g, "")] = {
+                    prefix: clean_link(snippet.name + (snippet.return ? ": " + snippet.return : "")),
+                    body: clean_link(snippet.name),
+                    description: clean_link(snippet.description).trim(),
+                    scope: scope.join(",")
+                }
+            }
+        }
+    } else {
+        throw new Error(`unknown lang: ${lang}`)
+    }
+
+    fs.writeFileSync(`dist/${output}`, JSON.stringify(snippetjson, undefined, 2));
+}
+
+const generate_snippet_ast = (lines) => {
+    let tag = undefined;
+    const snippets = [];
+    for(const line of lines) {
+        if(line.startsWith("**:link:")) {
+            if(tag) snippets.push(tag);
+            tag = {
+                name: line.split("**")[1].split(":"),
+                arguments: [],
+                return: null,
+                description: "",
+                function: true
+            }
+            tag.name = tag.name[tag.name.length - 1]
+
+            arguments = line.split("**")[2]
+            if(arguments.startsWith("(")) {
+                const args = arguments.substr(1).split(")")[0]
+                if(args) {
+                    for(const arg of args.split(", ")) {
+                        tag.arguments.push(arg.split(": "));
+                    }
+                }
+                if(!arguments.endsWith(")")) {
+                    tag.return = arguments.split("): ")[1];
+                }
+            } else {
+                tag.return = arguments.substr(2);
+                tag.function = false
+            }
+
+        } else if(line.startsWith("#")) {
+            if(tag) snippets.push(tag);
+            tag = undefined;
+        } else if(tag) {
+            tag.description += line + "\n";
+        }
+    }
+    
+    if(tag) snippets.push(tag);
+    return snippets;
+}
+
+
+const generate_markdown = (i, n, o) => {
+    const template = handlebars.compile(fs.readFileSync("src/markdown.hbs").toString());
+    const html = template({name: n, file: i});
+    fs.writeFileSync(`dist/${o}`, html);
+}
+
+generate_markdown("index.md", "Home", "index.html");
+generate_markdown("license.md", "License", "license.html");
+
+// onetap
+//   V3
+fs.ensureDirSync("dist/onetap/v3/docs");
+generate_docs({
+    "onetap/v3/docs/index.md": "onetap/v3/docs/index.html",
+    "onetap/v3/docs/types.md": "onetap/v3/docs/types.html",
+    "onetap/v3/docs/globals.md": "onetap/v3/docs/globals.html",
+    "onetap/v3/docs/callbacks.md": "onetap/v3/docs/callbacks.html",
+}, builtin_doclinks.javascript);
+generate_snippets("onetap/v3/docs/globals.md", "onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
+generate_snippets("onetap/v3/docs/globals.md", "onetap/v3/snippets.coffee.json", "coffee", ["coffeescript"]);
+generate_scripts("onetap/v3/scripts");
+//   V3 Re:Run
+fs.ensureDirSync("dist/onetap/v3rerun/docs");
+// generate_docs()
+generate_scripts("onetap/v3rerun/runtime");
+
+fs.copySync("public/static", "dist/static");
+
+
+// aimware
+fs.ensureDirSync("dist/aimware/v5/docs");
+generate_docs({
+    "aimware/v5/docs/index.md": "aimware/v5/docs/index.html",
+    "aimware/v5/docs/callbacks.md": "aimware/v5/docs/callbacks.html",
+    "aimware/v5/docs/classes.md": "aimware/v5/docs/classes.html",
+    "aimware/v5/docs/globals.md": "aimware/v5/docs/globals.html",
+    "aimware/v5/docs/ressources.md": "aimware/v5/docs/ressources.html"
+}, builtin_doclinks.lua)
+generate_snippets("aimware/v5/docs/globals.md", "aimware/v5/snippets.lua.json", "lua", ["lua"]);
+generate_snippets("aimware/v5/docs/globals.md", "aimware/v5/snippets.moon.json", "moon", ["moonscript"]);
