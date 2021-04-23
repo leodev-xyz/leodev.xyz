@@ -320,7 +320,7 @@ generate_scripts("csgo/onetap/v3rerun/runtime");
 
 
 // aimware
-fs.ensureDirSync("dist/aimware/v5/docs");
+fs.ensureDirSync("dist/csgo/aimware/v5/docs");
 generate_docs({
     "csgo/aimware/v5/docs/index.md": "csgo/aimware/v5/docs/index.html",
     "csgo/aimware/v5/docs/callbacks.md": "csgo/aimware/v5/docs/callbacks.html",
