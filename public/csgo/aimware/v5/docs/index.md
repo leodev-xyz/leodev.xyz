@@ -13,8 +13,8 @@ This documentation is for Aimware V5 because their's is outdated and doesn't hav
 
 Visual Studio Snippets for V5:
 
-- [Lua](/aimware/v5/snippets.lua.json)
-- [Moonscript](/aimware/v5/snippets.moon.json)
+- [Lua](/csgo/aimware/v5/snippets.lua.json)
+- [Moonscript](/csgo/aimware/v5/snippets.moon.json)
 
 ### Adding snippets
 
