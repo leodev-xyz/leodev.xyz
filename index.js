@@ -296,37 +296,37 @@ const generate_markdown = (i, n, o) => {
     fs.writeFileSync(`dist/${o}`, html);
 }
 
+fs.copySync("public/static", "dist/static");
+
 generate_markdown("index.md", "Home", "index.html");
 generate_markdown("license.md", "License", "license.html");
 
 // onetap
 //   V3
-fs.ensureDirSync("dist/onetap/v3/docs");
+fs.ensureDirSync("dist/csgo/onetap/v3/docs");
 generate_docs({
-    "onetap/v3/docs/index.md": "onetap/v3/docs/index.html",
-    "onetap/v3/docs/types.md": "onetap/v3/docs/types.html",
-    "onetap/v3/docs/globals.md": "onetap/v3/docs/globals.html",
-    "onetap/v3/docs/callbacks.md": "onetap/v3/docs/callbacks.html",
+    "csgo/onetap/v3/docs/index.md": "csgo/onetap/v3/docs/index.html",
+    "csgo/onetap/v3/docs/types.md": "csgo/onetap/v3/docs/types.html",
+    "csgo/onetap/v3/docs/globals.md": "csgo/onetap/v3/docs/globals.html",
+    "csgo/onetap/v3/docs/callbacks.md": "csgo/onetap/v3/docs/callbacks.html",
 }, builtin_doclinks.javascript);
-generate_snippets("onetap/v3/docs/globals.md", "onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
-generate_snippets("onetap/v3/docs/globals.md", "onetap/v3/snippets.coffee.json", "coffee", ["coffeescript"]);
-generate_scripts("onetap/v3/scripts");
+generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
+generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.coffee.json", "coffee", ["coffeescript"]);
+generate_scripts("csgo/onetap/v3/scripts");
 //   V3 Re:Run
-fs.ensureDirSync("dist/onetap/v3rerun/docs");
+fs.ensureDirSync("dist/csgo/onetap/v3rerun/docs");
 // generate_docs()
-generate_scripts("onetap/v3rerun/runtime");
-
-fs.copySync("public/static", "dist/static");
+generate_scripts("csgo/onetap/v3rerun/runtime");
 
 
 // aimware
 fs.ensureDirSync("dist/aimware/v5/docs");
 generate_docs({
-    "aimware/v5/docs/index.md": "aimware/v5/docs/index.html",
-    "aimware/v5/docs/callbacks.md": "aimware/v5/docs/callbacks.html",
-    "aimware/v5/docs/classes.md": "aimware/v5/docs/classes.html",
-    "aimware/v5/docs/globals.md": "aimware/v5/docs/globals.html",
-    "aimware/v5/docs/ressources.md": "aimware/v5/docs/ressources.html"
+    "csgo/aimware/v5/docs/index.md": "csgo/aimware/v5/docs/index.html",
+    "csgo/aimware/v5/docs/callbacks.md": "csgo/aimware/v5/docs/callbacks.html",
+    "csgo/aimware/v5/docs/classes.md": "csgo/aimware/v5/docs/classes.html",
+    "csgo/aimware/v5/docs/globals.md": "csgo/aimware/v5/docs/globals.html",
+    "csgo/aimware/v5/docs/ressources.md": "csgo/aimware/v5/docs/ressources.html"
 }, builtin_doclinks.lua)
-generate_snippets("aimware/v5/docs/globals.md", "aimware/v5/snippets.lua.json", "lua", ["lua"]);
-generate_snippets("aimware/v5/docs/globals.md", "aimware/v5/snippets.moon.json", "moon", ["moonscript"]);
+generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.lua.json", "lua", ["lua"]);
+generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.moon.json", "moon", ["moonscript"]);
