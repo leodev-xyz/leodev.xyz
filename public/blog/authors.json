@@ -1,0 +1,31 @@
+{
+    "leodeveloper": {
+        "name": "Leo Developer",
+        "avatar": {
+            "src": "https://github.com/Le0Developer.png",
+            "width": "184px",
+            "height": "184px"
+        },
+        "accounts": [
+            {
+                "name": "Github",
+                "label": "Le0Developer",
+                "link": "https://github.com/Le0Developer",
+                "image": {
+                    "src": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+                    "width": "560px",
+                    "height": "560px"
+                }
+            },
+            {
+                "name": "Discord",
+                "label": "Leo ツ#1337",
+                "image": {
+                    "src": "https://discord.com/assets/2c21aeda16de354ba5334551a883b481.png",
+                    "width": "245px",
+                    "height": "240px"
+                }
+            }
+        ]
+    }
+}
