@@ -8,4 +8,3 @@ build-html:
 
 clean:
 	rm -rf dist
-

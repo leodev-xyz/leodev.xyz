@@ -1,4 +1,5 @@
 module.exports = {
+    mode: "jit",
     purge: [
         "./src/**/*.{html,hbs,md}",
         "./public/**/*.{html,hbs,md}",
