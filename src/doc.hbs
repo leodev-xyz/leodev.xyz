@@ -24,6 +24,12 @@
         </div>
         {{/if}}
     </div>
+    {{#if doclinks}}
+    <div class="lg:pl-[20vw] w-full h-full">
+        {{> footer}}
+    </div>
+    {{else}}
     {{> footer}}
+    {{/if}}
 </body>
 </html>
