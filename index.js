@@ -20,6 +20,12 @@ handlebars.registerHelper("include_markdown", options => {
     const markdown = marked(fs.readFileSync(`public/${options.hash.file}`).toString());
     return `<div class="markdown">${markdown}</div>`;
 })
+handlebars.registerHelper("docsidebarlink", options => {
+    const name = options.hash.name.split(".");
+    if(name.length === 1)
+        return `<a class="block mt-2 font-bold" href="#${options.hash.ref}">${name[name.length - 1]}</a>`
+    return `<a class="block" href="#${options.hash.ref}">${name.slice(0, -1).join(".")}.<span class="font-semibold">${name[name.length - 1]}</span></a>`
+})
 
 const LICENSE_CORE = `(c) Copyright LeoDeveloper 2020 - ${new Date().getFullYear()}\nReleased under the MIT license at https://leodeveloper.pages.dev\nVisit https://leodeveloper.pages.dev/license.html for more information.`
 
@@ -32,6 +38,7 @@ const LICENSES = {
 
 
 let doclinks = {};
+let doclinks_current_only = {};
 let missinglinks = 0;
 let currentlyrendering = undefined;
 let header = undefined;
@@ -61,6 +68,7 @@ marked.use({renderer: {
         const id = parts.slice(2).join("-");
         const name = parts[parts.length - 1].split(".");
         doclinks[id] = `/${currentlyrendering}#${id}`
+        if(!doclinks_current_only[id]) doclinks_current_only[id] = parts[parts.length - 1];
         const prefix = (in_definition === 2 ? "</div>" : "") + `<a href="#${id}" class="anchor w-4 h-4 mr-1"><img class="inline w-4 h-4 invisible" src="/static/svg/anchor.svg"></img></a>`;
         in_definition = 1;
         if(name.length === 1)
@@ -99,7 +107,7 @@ const safemarked = (content, filename) => {
         currentlyrendering = undefined;
     in_definition = 0;
     header = undefined;
-    return marked(content);
+    return marked(content) + (in_definition === 2 ? "</div>" : "");
 }
 
 const generate_docs = (map, builtin_doclinks) => {
@@ -109,22 +117,31 @@ const generate_docs = (map, builtin_doclinks) => {
     const markdown = {};
     const headers = {};
     for(const input in map) {
-        markdown[input] = safemarked(fs.readFileSync(`public/${input}`).toString(), map[input]);
+        doclinks_current_only = {}
+        markdown[input] = {
+            markdown: safemarked(fs.readFileSync(`public/${input}`).toString(), map[input]),
+            doclinks: doclinks_current_only
+        };
         headers[input] = header;
     }
     // ok, some links were missing, but doclinks should be populated by now
     if(missinglinks > 0) {
         missinglinks = -1; // if any are still missing => error
         for(const input in map) {
-            markdown[input] = safemarked(fs.readFileSync(`public/${input}`).toString(), map[input]);
+            doclinks_current_only = {}
+            markdown[input] = {
+                markdown: safemarked(fs.readFileSync(`public/${input}`).toString(), map[input]),
+                doclinks: doclinks_current_only
+            };
         }
     }
-    const bare = handlebars.compile(fs.readFileSync("src/bare.hbs").toString());
+    const template = handlebars.compile(fs.readFileSync("src/doc.hbs").toString());
 
     for(const input in map) {
-        fs.writeFileSync(`dist/${map[input]}`, bare({
+        fs.writeFileSync(`dist/${map[input]}`, template({
             name: headers[input],
-            bare: `<div class="markdown">${markdown[input]}</div>`
+            markdown: markdown[input].markdown,
+            doclinks: Object.keys(markdown[input].doclinks).length > 0 ? markdown[input].doclinks : undefined
         }))
     }
 
