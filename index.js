@@ -296,11 +296,53 @@ const generate_markdown = (i, n, o) => {
     fs.writeFileSync(`dist/${o}`, html);
 }
 
+const generate_blog = (path) => {
+    const authors = JSON.parse(fs.readFileSync(`public/${path}/authors.json`).toString());
+    let template = handlebars.compile(fs.readFileSync("src/blog/author.hbs").toString());
+    fs.ensureDirSync(`dist/${path}/authors`);
+    for(const id in authors) {
+        authors[id].id = id;
+        const html = template({author: authors[id], description: `${path}/authors/${id}.md`});
+        fs.writeFileSync(`dist/${path}/authors/${id}.html`, html);
+    }
+
+    fs.ensureDirSync(`dist/${path}/articles`);
+    template = handlebars.compile(fs.readFileSync("src/blog/article.hbs").toString());
+    const articles = [];
+    const tags = {};
+    for(const article of fs.readdirSync(`public/${path}/articles`)) {
+        if(!fs.existsSync(`public/${path}/articles/${article}/manifest.json`)) continue;
+        const manifest = JSON.parse(fs.readFileSync(`public/${path}/articles/${article}/manifest.json`).toString());
+        manifest.id = article;
+        for(const tag of manifest.tags) {
+            if(!tags[tag]) tags[tag] = [];
+            tags[tag].push(manifest);
+        }
+        articles.push(manifest);
+        const html = template({article: manifest, authors: manifest.authors.map(id => authors[id]), file: `${path}/articles/${article}/${manifest.file}`, path: path});
+        fs.writeFileSync(`dist/${path}/articles/${article}.html`, html);
+    }
+
+    template = handlebars.compile(fs.readFileSync("src/blog/blog.hbs").toString());
+    const html = template({articles: articles, path: path});
+    fs.writeFileSync(`dist/${path}/index.html`, html);
+
+    fs.ensureDirSync(`dist/${path}/tags`);
+    for(const tag in tags) {
+        const html = template({tag: tag, articles: tags[tag], path: path});
+        fs.writeFileSync(`dist/${path}/tags/${tag}.html`, html);
+    }
+}
+
+
+// main content
 fs.copySync("public/static", "dist/static");
 
 generate_markdown("index.md", "Home", "index.html");
 generate_markdown("license.md", "License", "license.html");
 generate_markdown("404.md", "404: Not Found", "404.html");
+
+generate_blog("blog");
 
 // onetap
 //   V3
