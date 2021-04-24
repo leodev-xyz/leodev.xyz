@@ -8,16 +8,35 @@ const crypto = require("crypto");
 const { minify } = require("terser");
 const deasync = require('deasync');
 const filesize = require('file-size');
+const hljs = require('highlight.js');
 
 
 const builtin_doclinks = require("./doclinks.js");
+
+let doclinks = {};
+let doclinks_current_only = {};
+let missinglinks = 0;
+let currentlyrendering = undefined;
+let header = undefined;
+let in_definition = 0;
+const safemarked = (content, filename) => {
+    if(filename) {
+        currentlyrendering = filename;
+        if(!content)
+            content = fs.readFileSync(`public/${filename}`).toString();
+    } else
+        currentlyrendering = undefined;
+    in_definition = 0;
+    header = undefined;
+    return marked(content) + (in_definition === 2 ? "</div>" : "");
+}
 
 handlebars.registerPartial("head", fs.readFileSync("src/head.html").toString());
 handlebars.registerPartial("header", fs.readFileSync("src/header.html").toString());
 handlebars.registerPartial("footer", fs.readFileSync("src/footer.html").toString());
 
 handlebars.registerHelper("include_markdown", options => {
-    const markdown = marked(fs.readFileSync(`public/${options.hash.file}`).toString());
+    const markdown = safemarked(fs.readFileSync(`public/${options.hash.file}`).toString());
     return `<div class="markdown">${markdown}</div>`;
 })
 handlebars.registerHelper("docsidebarlink", options => {
@@ -37,12 +56,6 @@ const LICENSES = {
 }
 
 
-let doclinks = {};
-let doclinks_current_only = {};
-let missinglinks = 0;
-let currentlyrendering = undefined;
-let header = undefined;
-let in_definition = 0;
 
 marked.use({renderer: {
     codespan: code => {
@@ -95,20 +108,12 @@ marked.use({renderer: {
             return `<p>${string}</p><div class="m-16">`
         }
         return false;
+    },
+    code: function(code, lang) {
+        if (lang === "nohighlight" || !lang) return false;
+        return `<pre><code class="hljs">${hljs.highlight(code, {language: lang}).value}</code></pre>`;
     }
 }})
-
-const safemarked = (content, filename) => {
-    if(filename) {
-        currentlyrendering = filename;
-        if(!content)
-            content = fs.readFileSync(`public/${filename}`).toString();
-    } else
-        currentlyrendering = undefined;
-    in_definition = 0;
-    header = undefined;
-    return marked(content) + (in_definition === 2 ? "</div>" : "");
-}
 
 const generate_docs = (map, builtin_doclinks) => {
     // reset everything
