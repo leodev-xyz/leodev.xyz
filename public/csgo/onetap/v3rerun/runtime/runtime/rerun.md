@@ -5,7 +5,7 @@ Re:Run is a project to make the onetap runtime better, remove code, simplify cod
 
 ### What it does
 
-- remove the `Global` module
+- removes the `Global` module
   - it only linked to already existing functions and was totally unneeded
 - adds `:link:Reference` for better interactions with the onetap UI
 - adds `:link:Entity` for better interacting with entities
