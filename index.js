@@ -360,7 +360,11 @@ const generate_blog = (path) => {
 // main content
 fs.copySync("public/static", "dist/static");
 
-generate_markdown("index.md", "Home", "index.html");
+(function() { // SCOPE
+    template = handlebars.compile(fs.readFileSync("src/home.hbs").toString());
+    const html = template();
+    fs.writeFileSync(`dist/index.html`, html);
+})()
 generate_markdown("license.md", "License", "license.html");
 generate_markdown("404.md", "404: Not Found", "404.html");
 
