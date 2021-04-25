@@ -464,8 +464,6 @@ Returns the width and height of the screen (not the CS:GO window!).
 
 Returns all children of the specified UI element.
 
-// TODO: verify
-
 **:link:UI.GetValue**(path: `:link:Path`)
 
 Returns the value of the specified UI element.
@@ -492,9 +490,9 @@ function toggleFakeLag() {
 }
 ```
 
-**:link:UI.RegisterCallback**()
+**:link:UI.RegisterCallback**(path: `:link:Path`, name: `:link:string`)
 
-// TODO
+Registers a callback which will be called everytime the specified UI element's value is changed.
 
 **:link:UI.AddCheckbox**(path: `:link:Path`, name: `:link:string`): Array[`:link:string`]
 
@@ -582,8 +580,6 @@ Sets the color at the specified path to the specified color.
 **:link:UI.SetHotkeyState**(path: `:link:Path`, value: `:link:boolean`)
 
 Sets the hotkey state of the specified hotkey.
-
-// TODO
 
 **:link:UI.GetHotkeyState**(path: `:link:Path`): `:link:boolean`
 
