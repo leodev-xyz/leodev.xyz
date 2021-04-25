@@ -73,7 +73,7 @@ Small modifications have been made.
 }
 
 .markdown pre code {
-    @apply block bg-transparent p-0 overflow-visible rounded-none;
+    @apply block bg-transparent p-0 overflow-visible rounded-none w-full overflow-auto;
 }
 
 .markdown ul {
