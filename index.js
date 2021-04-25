@@ -332,7 +332,7 @@ const generate_blog = (path) => {
     template = handlebars.compile(fs.readFileSync("src/blog/article.hbs").toString());
     const articles = [];
     const tags = {};
-    for(const article of fs.readdirSync(`public/${path}/articles`)) {
+    for(const article of fs.readdirSync(`public/${path}/articles`).reverse()) {
         if(!fs.existsSync(`public/${path}/articles/${article}/manifest.json`)) continue;
         const manifest = JSON.parse(fs.readFileSync(`public/${path}/articles/${article}/manifest.json`).toString());
         manifest.id = article;
