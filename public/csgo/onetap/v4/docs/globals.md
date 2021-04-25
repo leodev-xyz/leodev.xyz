@@ -509,14 +509,15 @@ Returns the path to it as a list.
 Creates a slider element with the specified range at the specified path.  
 Returns the path to it as a list.
 
-**:link:UI.AddHotkey**(path: `:link:Path`, name: `:link:string`): Array[`:link:string`]
+**:link:UI.AddHotkey**(path: `:link:Path`, name: `:link:string`, shortname: `:link:string`?): Array[`:link:string`]
 
 Creates a hotkey element at the specified path.  
+`shortname` is used for displaying in the hitbox state list (optional), use an empty string to hide the hotkey from the list.
 Returns the path to it as a list.
 
 Use `:link:UI.GetHotkeyState` to check if the hotkey is active.
 
-**:link:UI.AddDropdown**(path: `:link:Path`, name: `:link:string`, options: Array[`:link:string`]): Array[`:link:string`]
+**:link:UI.AddDropdown**(path: `:link:Path`, name: `:link:string`, options: Array[`:link:string`], searchable: `:link:boolean`?): Array[`:link:string`]
 
 Creates a dropdown element at the specified path.  
 Returns the path to it as a list.
