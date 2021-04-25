@@ -10,12 +10,13 @@
     {{> header}}
     <div class="px-1 md:px-2">
         {{#if doclinks}}
-        <div class="hidden lg:block fixed w-[20vw] overflow-y-auto h-full">
+        <div class="hidden lg:block fixed w-[20vw] overflow-y-auto h-full bg-gray-100 dark:bg-gray-900">
+            <p class="font-bold underline text-center">Quick access</p>
             {{#each doclinks}}
             {{{docsidebarlink ref=@key name=this}}}
             {{/each}}
         </div>
-        <div class="markdown lg:pl-[20vw] w-full h-full">
+        <div class="markdown lg:pl-[calc(20vw+2rem)] w-full h-full">
             {{{markdown}}}
         </div>
         {{else}}
