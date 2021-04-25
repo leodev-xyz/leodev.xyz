@@ -194,7 +194,7 @@ apply = ->
     this[name] = undefined for name, value of this
     this[name] = value for name, value of globals
 
-if this["exports"]  # when using exports directly, coffeescript will create it for you :facepalm:
-    this["exports"] = apply
+if typeof(exports) == "object"
+    exports.apply = apply
 else
     apply.call this

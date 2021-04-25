@@ -29,5 +29,5 @@ Cheat.RegisterCallback("Draw", function() {
 You can also `require()` the runtime like this:
 
 ```js
-require("runtime.js").call(thus);
+require("runtime.js").apply.call(this);
 ```
