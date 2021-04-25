@@ -397,6 +397,8 @@ generate_docs({
     "csgo/onetap/v4/docs/callbacks.md": "csgo/onetap/v4/docs/callbacks.html",
     "csgo/onetap/v4/docs/migrating.md": "csgo/onetap/v4/docs/migrating.html"
 }, builtin_doclinks.javascript);
+generate_snippets("csgo/onetap/v4/docs/globals.md", "csgo/onetap/v4/snippets.js.json", "js", ["javascript", "typescript"]);
+generate_snippets("csgo/onetap/v4/docs/globals.md", "csgo/onetap/v4/snippets.coffee.json", "coffee", ["coffeescript"]);
 
 
 // aimware
