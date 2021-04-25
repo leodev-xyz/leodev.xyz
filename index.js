@@ -336,11 +336,13 @@ const generate_blog = (path) => {
         if(!fs.existsSync(`public/${path}/articles/${article}/manifest.json`)) continue;
         const manifest = JSON.parse(fs.readFileSync(`public/${path}/articles/${article}/manifest.json`).toString());
         manifest.id = article;
-        for(const tag of manifest.tags) {
-            if(!tags[tag]) tags[tag] = [];
-            tags[tag].push(manifest);
+        if(manifest.public !== false) {
+            for(const tag of manifest.tags) {
+                if(!tags[tag]) tags[tag] = [];
+                tags[tag].push(manifest);
+            }
+            articles.push(manifest);
         }
-        articles.push(manifest);
         const html = template({article: manifest, authors: manifest.authors.map(id => authors[id]), file: `${path}/articles/${article}/${manifest.file}`, path: path});
         fs.writeFileSync(`dist/${path}/articles/${article}.html`, html);
     }
