@@ -18,7 +18,7 @@ Re:Run is a project to make the onetap runtime better, remove code, simplify cod
 You can just put the runtime code at the top of your code and you'll have the runtime.
 
 ```js
-var apply;apply=function(runtime){...},module.exports=apply,apply(this);
+(function(){...}).call(this);
 
 Cheat.RegisterCallback("Draw", function() {
     throw new Error("Hello World");
@@ -26,8 +26,8 @@ Cheat.RegisterCallback("Draw", function() {
 ```
 
 
-You can also `require()` the runtime (because for some reason they share the same runtime)
+You can also `require()` the runtime like this:
 
 ```js
-require("runtime.js");
+require("runtime.js").call(thus);
 ```
