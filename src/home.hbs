@@ -7,7 +7,7 @@
 <body class="text-black bg-white dark:text-white dark:bg-gray-800 overscroll-none">
     {{> header}}
     <div class="px-1 md:px-2">
-        <h1 class="flex items-center justify-center font-extrabold text-[8rem] mt-16 mb-2">
+        <h1 class="flex items-center justify-center font-extrabold text-[4rem] md:text-[8rem] mt-8 md:mt-16 mb-2">
             Hello there!
         </h1>
         <div class="grid grid-cols-3 gap-2 mb-8">
@@ -20,17 +20,28 @@
                 CS:GO
             </a>
         </h2>
-        <div class="grid grid-cols-2 m-4">
-            <div id="onetap" class="rounded-xl ring-4 ring-gray-200 dark:ring-gray-900 mx-2 p-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 m-4">
+            <div id="onetap" class="rounded-xl ring-4 ring-gray-200 dark:ring-gray-900 my-2 md:my-0 md:mx-2 p-2">
                 <h3 class="text-xl font-bold">Onetap</h3>
                 <hr>
-                <p class="font-semibold mt-4">Onetap V3</p>
-                <a class="block text-blue-600 dark:text-blue-400" href="/csgo/onetap/v3/docs/">Documentation</a>
-                <a class="block text-blue-600 dark:text-blue-400" href="/csgo/onetap/v3/scripts.html">Scripts</a>
-                <p class="font-semibold mt-4">Onetap V4</p>
-                <p class="text-sm">Documentation coming soon...</p>
+                <div class="grid grid-cols-3 md:grid-cols-1 lg:grid-cols-3">
+                    <div>
+                        <p class="font-semibold mt-4">Onetap V3</p>
+                        <a class="block text-blue-600 dark:text-blue-400" href="/csgo/onetap/v3/docs/">Documentation</a>
+                        <a class="block text-blue-600 dark:text-blue-400" href="/csgo/onetap/v3/scripts.html">Scripts</a>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-4">Onetap V3 Re:Run</p>
+                        <a class="block text-blue-600 dark:text-blue-400" href="/csgo/onetap/v3rerun/runtime.html">Runtime</a>
+                        <p class="text-sm">Documentation coming soon...</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-4">Onetap V4</p>
+                        <p class="text-sm">Documentation coming soon...</p>
+                    </div>
+                </div>
             </div>
-            <div id="aimware" class="rounded-xl ring-4 ring-gray-200 dark:ring-gray-900 mx-2 p-2">
+            <div id="aimware" class="rounded-xl ring-4 ring-gray-200 dark:ring-gray-900 my-2 md:my-0 md:mx-2 p-2">
                 <h3 class="text-xl font-bold">Aimware</h3>
                 <hr>
                 <p class="font-semibold mt-4">Aimware V5</p>
