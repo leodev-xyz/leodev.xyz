@@ -377,7 +377,7 @@ generate_docs({
     "csgo/onetap/v3/docs/index.md": "csgo/onetap/v3/docs/index.html",
     "csgo/onetap/v3/docs/types.md": "csgo/onetap/v3/docs/types.html",
     "csgo/onetap/v3/docs/globals.md": "csgo/onetap/v3/docs/globals.html",
-    "csgo/onetap/v3/docs/callbacks.md": "csgo/onetap/v3/docs/callbacks.html",
+    "csgo/onetap/v3/docs/callbacks.md": "csgo/onetap/v3/docs/callbacks.html"
 }, builtin_doclinks.javascript);
 generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
 generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.coffee.json", "coffee", ["coffeescript"]);
@@ -386,6 +386,15 @@ generate_scripts("csgo/onetap/v3/scripts");
 fs.ensureDirSync("dist/csgo/onetap/v3rerun/docs");
 // generate_docs()
 generate_scripts("csgo/onetap/v3rerun/runtime");
+//   V4
+fs.ensureDirSync("dist/csgo/onetap/v4/docs");
+generate_docs({
+    "csgo/onetap/v4/docs/index.md": "csgo/onetap/v4/docs/index.html",
+    "csgo/onetap/v4/docs/types.md": "csgo/onetap/v4/docs/types.html",
+    "csgo/onetap/v4/docs/globals.md": "csgo/onetap/v4/docs/globals.html",
+    "csgo/onetap/v4/docs/callbacks.md": "csgo/onetap/v4/docs/callbacks.html",
+    "csgo/onetap/v4/docs/migrating.md": "csgo/onetap/v4/docs/migrating.html"
+}, builtin_doclinks.javascript);
 
 
 // aimware
