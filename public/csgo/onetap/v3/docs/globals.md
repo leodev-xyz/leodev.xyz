@@ -455,7 +455,7 @@ Creates a label element in the scripting section.
 
 **:link:UI.AddDropdown**(name: `:link:string`, options)
 
-Creates a dropdown elemnt in the scripting section.  
+Creates a dropdown element in the scripting section.  
 `options` is a list of `:link:string`.  
 Returns the path to it as a list.
 
