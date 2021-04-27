@@ -345,6 +345,9 @@ const generate_blog = (path) => {
         }
         const html = template({article: manifest, authors: manifest.authors.map(id => authors[id]), file: `${path}/articles/${article}/${manifest.file}`, path: path});
         fs.writeFileSync(`dist/${path}/articles/${article}.html`, html);
+        if(fs.existsSync(`public/${path}/articles/${article}/assets`)) {
+            fs.copySync(`public/${path}/articles/${article}/assets`, `dist/${path}/articles/${article}/assets`);
+        }
     }
 
     template = handlebars.compile(fs.readFileSync("src/blog/blog.hbs").toString());
