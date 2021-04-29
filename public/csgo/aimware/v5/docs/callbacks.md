@@ -42,7 +42,7 @@ Called on every user message received from server.
 
 Called when console command is sent to server (e.g. `say hello global chat`).
 
-**:link:AimbotTarget**(target: `Entity`?)
+**:link:AimbotTarget**(target: `:link:Entity`?)
 
 Called when legitbot or ragebot switches target (target can be `nil` if the legitbot/ragebot stops targetting that entity).
 

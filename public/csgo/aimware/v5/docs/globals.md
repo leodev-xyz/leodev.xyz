@@ -530,7 +530,7 @@ http.Get("https://myserver/myscript/version", function(version)
     if version == nil then return end -- nil means no internet connection
     if version == VERSION then return end -- no update
     http.Get("https://myserver/myscript/script.lua", function(code)
-        if code == nil then return end -- no connectionm, abort
+        if code == nil then return end -- no connection, abort
         file.Write(GetScriptName(), code)
         UnloadScript(GetScriptName())
         LoadScript(GetScriptName())
