@@ -9,5 +9,18 @@ The source code of my website: https://leodeveloper.pages.dev
 
 ## Building
 
-Install the dependencies with `npm i` and then generate the website's html/css/js using `make`.  
-All generated files will be in the `dist/` directory.
+### Dependencies
+
+Node dependencies: `npm i`
+
+For compiling `.moon` files, you need the [MoonScript](https://moonscript.org/#installation) compiler.
+
+For compiling `.yue` files, you need the [YueScript](http://yuescript.org/doc/#installation) compiler.
+
+
+### Generating website
+
+Use `make` to generate all files (html/js/css, ...).
+
+All generated files will be in the `dist/` directory, ready to be served with a simple webserver.
+(e.g. `python3 -m http.server`)

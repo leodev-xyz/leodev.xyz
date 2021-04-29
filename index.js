@@ -6,9 +6,11 @@ const path = require("path");
 const coffeescript = require("coffeescript");
 const crypto = require("crypto");
 const { minify } = require("terser");
-const deasync = require('deasync');
 const filesize = require('file-size');
 const hljs = require('highlight.js');
+const luamin = require("luamin");
+const exec = require('child_process').exec;
+const tmpdir = require("os").tmpdir;
 
 
 const builtin_doclinks = require("./doclinks.js");
@@ -152,7 +154,7 @@ const generate_docs = (map, builtin_doclinks) => {
 
     return markdown;
 }
-const generate_scripts = (where) => {
+const generate_scripts = async (where) => {
     const scripts = fs.readdirSync(`public/${where}`);
     const manifests = [];
     for(const script of scripts) {
@@ -175,7 +177,7 @@ const generate_scripts = (where) => {
             markdown.push("|  Filename  |  Size  |  SHA256  |  MD5  |\n");
             markdown.push("| ---------- | ------ | -------- | ----- |\n");
             for(const file of manifest.files) {
-                const scripts = prepare_scripts(where, manifest.id, file, manifest.settings);
+                const scripts = await prepare_scripts(where, manifest.id, file, manifest.settings);
                 for(const script of scripts) {
                     const filename = script[0];
                     let content = script[1];
@@ -199,7 +201,7 @@ const generate_scripts = (where) => {
         bare: `<div class="markdown">${safemarked(markdown.join(""))}</div>`
     }))
 }
-const prepare_scripts = (where, scriptname, script, settings) => {
+const prepare_scripts = async (where, scriptname, script, settings) => {
     const scripts = [];
     let source = fs.readFileSync(`public/${where}/${scriptname}/${script}`).toString();
     if(path.extname(script) === ".coffee") {
@@ -209,11 +211,29 @@ const prepare_scripts = (where, scriptname, script, settings) => {
     }
     if(path.extname(script) === ".js") {
         scripts.push([script, source]);
-        let minified;
-        // UGLY, thx terser for forcing promises, really horrible
-        minify(source, {ecma: 5, format: {ascii_only: true}}).then((res) => minified = res);
-        deasync.loopWhile(() => !minified);
-        scripts.push([script.substr(0, script.length - 3) + ".min.js", minified.code]);
+        source = await minify(source, {ecma: 5, format: {ascii_only: true}}).code;
+        scripts.push([script.substr(0, script.length - 3) + ".min.js", source]);
+    }
+    if(path.extname(script) === ".moon" || path.extname(script) === ".yue") {
+        const isMoon = path.extname(script) === ".moon";
+        scripts.push([script, source]);
+        const tmp = tmpdir();
+        fs.writeFileSync(path.join(tmp, script), source);
+        await new Promise((resolve, reject) => {
+            exec((isMoon ? "moonc" : "yue") + " " + path.join(tmp, script), (err, stdout, stderr) => {
+                if(err) {
+                    console.error("Error while compiling " + (isMoon ? "moon" : "yue") + "script file:", stderr ? stderr : stdout);
+                    return reject(err);
+                }
+                resolve();
+            })
+        })
+        script = script.substr(0, script.length - path.extname(script).length) + ".lua"
+        source = fs.readFileSync(path.join(tmp, script)).toString();
+    }
+    if(path.extname(script) === ".lua") {
+        scripts.push([script, source]);
+        scripts.push([script.substr(0, script.length - 4) + ".min.lua", luamin.minify(source)])
     }
     return scripts;
 }
@@ -243,7 +263,7 @@ const generate_snippets = (input, output, lang, scope) => {
                 }
             }
         }
-    } else if(lang === "coffee" || lang === "moon") {
+    } else if(lang === "coffee" || lang === "moon" || lang === "yue") {
         for(const snippet of snippets) {
             if(snippet.function) {
                 snippetjson[snippet.name.replace(/[^a-zA-Z]/g, "")] = {
@@ -361,57 +381,58 @@ const generate_blog = (path) => {
     }
 }
 
+(async function() {
+    fs.copySync("public/static", "dist/static");
 
-// main content
-fs.copySync("public/static", "dist/static");
-
-(function() { // SCOPE
-    template = handlebars.compile(fs.readFileSync("src/home.hbs").toString());
-    const html = template();
-    fs.writeFileSync(`dist/index.html`, html);
-})()
-generate_markdown("license.md", "License", "license.html");
-generate_markdown("404.md", "404: Not Found", "404.html");
-
-generate_blog("blog");
-
-// onetap
-//   V3
-fs.ensureDirSync("dist/csgo/onetap/v3/docs");
-generate_docs({
-    "csgo/onetap/v3/docs/index.md": "csgo/onetap/v3/docs/index.html",
-    "csgo/onetap/v3/docs/types.md": "csgo/onetap/v3/docs/types.html",
-    "csgo/onetap/v3/docs/globals.md": "csgo/onetap/v3/docs/globals.html",
-    "csgo/onetap/v3/docs/callbacks.md": "csgo/onetap/v3/docs/callbacks.html"
-}, builtin_doclinks.javascript);
-generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
-generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.coffee.json", "coffee", ["coffeescript"]);
-generate_scripts("csgo/onetap/v3/scripts");
-//   V3 Re:Run
-fs.ensureDirSync("dist/csgo/onetap/v3rerun/docs");
-// generate_docs()
-generate_scripts("csgo/onetap/v3rerun/runtime");
-//   V4
-fs.ensureDirSync("dist/csgo/onetap/v4/docs");
-generate_docs({
-    "csgo/onetap/v4/docs/index.md": "csgo/onetap/v4/docs/index.html",
-    "csgo/onetap/v4/docs/types.md": "csgo/onetap/v4/docs/types.html",
-    "csgo/onetap/v4/docs/globals.md": "csgo/onetap/v4/docs/globals.html",
-    "csgo/onetap/v4/docs/callbacks.md": "csgo/onetap/v4/docs/callbacks.html",
-    "csgo/onetap/v4/docs/migrating.md": "csgo/onetap/v4/docs/migrating.html"
-}, builtin_doclinks.javascript);
-generate_snippets("csgo/onetap/v4/docs/globals.md", "csgo/onetap/v4/snippets.js.json", "js", ["javascript", "typescript"]);
-generate_snippets("csgo/onetap/v4/docs/globals.md", "csgo/onetap/v4/snippets.coffee.json", "coffee", ["coffeescript"]);
-
-
-// aimware
-fs.ensureDirSync("dist/csgo/aimware/v5/docs");
-generate_docs({
-    "csgo/aimware/v5/docs/index.md": "csgo/aimware/v5/docs/index.html",
-    "csgo/aimware/v5/docs/callbacks.md": "csgo/aimware/v5/docs/callbacks.html",
-    "csgo/aimware/v5/docs/classes.md": "csgo/aimware/v5/docs/classes.html",
-    "csgo/aimware/v5/docs/globals.md": "csgo/aimware/v5/docs/globals.html",
-    "csgo/aimware/v5/docs/ressources.md": "csgo/aimware/v5/docs/ressources.html"
-}, builtin_doclinks.lua)
-generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.lua.json", "lua", ["lua"]);
-generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.moon.json", "moon", ["moonscript"]);
+    (function() { // SCOPE
+        template = handlebars.compile(fs.readFileSync("src/home.hbs").toString());
+        const html = template();
+        fs.writeFileSync(`dist/index.html`, html);
+    })()
+    generate_markdown("license.md", "License", "license.html");
+    generate_markdown("404.md", "404: Not Found", "404.html");
+    
+    generate_blog("blog");
+    
+    // onetap
+    //   V3
+    fs.ensureDirSync("dist/csgo/onetap/v3/docs");
+    generate_docs({
+        "csgo/onetap/v3/docs/index.md": "csgo/onetap/v3/docs/index.html",
+        "csgo/onetap/v3/docs/types.md": "csgo/onetap/v3/docs/types.html",
+        "csgo/onetap/v3/docs/globals.md": "csgo/onetap/v3/docs/globals.html",
+        "csgo/onetap/v3/docs/callbacks.md": "csgo/onetap/v3/docs/callbacks.html"
+    }, builtin_doclinks.javascript);
+    generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
+    generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.coffee.json", "coffee", ["coffeescript"]);
+    generate_scripts("csgo/onetap/v3/scripts");
+    //   V3 Re:Run
+    fs.ensureDirSync("dist/csgo/onetap/v3rerun/docs");
+    // generate_docs()
+    await generate_scripts("csgo/onetap/v3rerun/runtime");
+    //   V4
+    fs.ensureDirSync("dist/csgo/onetap/v4/docs");
+    generate_docs({
+        "csgo/onetap/v4/docs/index.md": "csgo/onetap/v4/docs/index.html",
+        "csgo/onetap/v4/docs/types.md": "csgo/onetap/v4/docs/types.html",
+        "csgo/onetap/v4/docs/globals.md": "csgo/onetap/v4/docs/globals.html",
+        "csgo/onetap/v4/docs/callbacks.md": "csgo/onetap/v4/docs/callbacks.html",
+        "csgo/onetap/v4/docs/migrating.md": "csgo/onetap/v4/docs/migrating.html"
+    }, builtin_doclinks.javascript);
+    generate_snippets("csgo/onetap/v4/docs/globals.md", "csgo/onetap/v4/snippets.js.json", "js", ["javascript", "typescript"]);
+    generate_snippets("csgo/onetap/v4/docs/globals.md", "csgo/onetap/v4/snippets.coffee.json", "coffee", ["coffeescript"]);
+    
+    
+    // aimware
+    fs.ensureDirSync("dist/csgo/aimware/v5/docs");
+    generate_docs({
+        "csgo/aimware/v5/docs/index.md": "csgo/aimware/v5/docs/index.html",
+        "csgo/aimware/v5/docs/callbacks.md": "csgo/aimware/v5/docs/callbacks.html",
+        "csgo/aimware/v5/docs/classes.md": "csgo/aimware/v5/docs/classes.html",
+        "csgo/aimware/v5/docs/globals.md": "csgo/aimware/v5/docs/globals.html",
+        "csgo/aimware/v5/docs/ressources.md": "csgo/aimware/v5/docs/ressources.html"
+    }, builtin_doclinks.lua)
+    generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.lua.json", "lua", ["lua"]);
+    generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.moon.json", "moon", ["moonscript", "yuescript"]);
+    await generate_scripts("csgo/aimware/v5/scripts");
+})();
