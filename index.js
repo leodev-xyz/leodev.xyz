@@ -173,7 +173,7 @@ const generate_scripts = async (where) => {
             fs.writeFileSync(`dist/${where}/${manifest.id}/latest`, manifest.version);
         }
         if(manifest.files) {
-            markdown.push("\n\n");
+            markdown.push(`\n<div class="w-full overflow-auto">\n\n`);
             markdown.push("|  Filename  |  Size  |  SHA256  |  MD5  |\n");
             markdown.push("| ---------- | ------ | -------- | ----- |\n");
             for(const file of manifest.files) {
@@ -189,8 +189,8 @@ const generate_scripts = async (where) => {
                     fs.writeFileSync(`dist/${where}/${manifest.id}/${filename}`, content);
                     markdown.push(`|  [${filename}](/${where}/${manifest.id}/${filename})  |  ${filesize(content.length).human()}  |  \`${sha256}\`  |  \`${md5}\`  |\n`);
                 }
-                markdown.push("\n\n");
             }
+            markdown.push("</div>\n\n");
         }
     }
 
