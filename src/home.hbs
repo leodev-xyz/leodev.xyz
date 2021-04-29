@@ -6,7 +6,7 @@
 </head>
 <body class="text-black bg-white dark:text-white dark:bg-gray-800 overscroll-none">
     {{> header}}
-    <div class="px-1 md:px-2">
+    <div class="px-1 md:px-2 h-[calc(100vh-1.5rem)] overflow-auto w-full">
         <h1 class="flex items-center justify-center font-extrabold text-[4rem] md:text-[8rem] mt-8 md:mt-16 mb-2">
             Hello there!
         </h1>
@@ -49,7 +49,8 @@
                 <a class="block text-blue-600 dark:text-blue-400" href="/csgo/aimware/v5/scripts.html">Scripts</a>
             </div>
         </div>
+
+        {{> footer}}
     </div>
-    {{> footer}}
 </body>
 </html>

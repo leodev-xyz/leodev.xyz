@@ -6,7 +6,7 @@
 </head>
 <body class="text-black bg-white dark:text-white dark:bg-gray-800 overscroll-none">
     {{> header}}
-    <div class="px-1 md:px-2">
+    <div class="px-1 md:px-2  h-[calc(100vh-1.5rem)] overflow-auto">
         {{#if tag}}
         <h1 class="text-4xl font-bold mt-4 text-center">Articles tagged with {{tag}}</h1>
         {{else}}
@@ -31,7 +31,8 @@
             </div>
             {{/each}}
         </div>
+    
+        {{> footer}}
     </div>
-    {{> footer}}
 </body>
 </html>

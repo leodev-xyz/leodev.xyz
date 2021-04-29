@@ -3,34 +3,31 @@
 <head>
     {{> head}}
     <title>{{name}}</title>
-    <script src="/static/js/highlight.js@10.7.1/highlight.pack.js"></script>
-    <script>hljs.highlightAll();</script>
 </head>
 <body class="text-black bg-white dark:text-white dark:bg-gray-800 overscroll-none">
     {{> header}}
-    <div class="px-1 md:px-2">
-        {{#if doclinks}}
-        <div class="hidden lg:block fixed w-[20vw] overflow-y-auto h-full bg-gray-100 dark:bg-gray-900">
+    {{#if doclinks}}
+    <div class="lg:flex flex-auto h-[calc(100vh-1.5rem)] w-full">
+        <div class="hidden lg:block flex-shrink-0 overflow-y-auto h-full bg-gray-100 dark:bg-gray-900">
             <p class="font-bold underline text-center">Quick access</p>
             {{#each doclinks}}
             {{{docsidebarlink ref=@key name=this}}}
             {{/each}}
         </div>
-        <div class="markdown lg:pl-[calc(20vw+2rem)] w-full h-full">
-            {{{markdown}}}
+        <div class="px-1 md:px-2 w-full h-full overflow-auto">
+            <div class="markdown">
+                {{{markdown}}}
+            </div>
+            {{> footer}}
         </div>
-        {{else}}
+    </div>
+    {{else}}
+    <div class="h-[calc(100vh-1.5rem)] w-full overflow-auto">
         <div class="markdown">
             {{{markdown}}}
         </div>
-        {{/if}}
-    </div>
-    {{#if doclinks}}
-    <div class="lg:pl-[20vw] w-full h-full">
         {{> footer}}
     </div>
-    {{else}}
-    {{> footer}}
     {{/if}}
 </body>
 </html>
