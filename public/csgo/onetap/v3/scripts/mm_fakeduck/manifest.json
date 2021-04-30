@@ -3,6 +3,6 @@
     "version": "1.0.0",
     "description": "mm_fakeduck.md",
     "files": [
-        "mm_fakeduck@1.0.0.coffee"
+        "mm_fakeduck.coffee"
     ]
 }

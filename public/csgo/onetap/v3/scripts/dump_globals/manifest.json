@@ -3,6 +3,6 @@
     "version": "1.0.0",
     "description": "dump_globals.md",
     "files": [
-        "dump_globals@1.0.0.coffee"
+        "dump_globals.coffee"
     ]
 }
