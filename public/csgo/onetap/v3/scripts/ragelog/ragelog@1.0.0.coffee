@@ -120,6 +120,7 @@ on_ragebot_fire = ->
         damage: trace[1],
         lby: lby,
         hitchance: hitchance,
+        hitbox: hitbox,
         trace: trace
     }
 
@@ -137,6 +138,7 @@ on_player_hurt = ->
 
 on_player_death = ->
     if Entity.GetEntityFromUserID(Event.GetInt "userid") == Entity.GetLocalPlayer()
+        shotEnd()
         while shots.length > 0
             print "[\x07RAGEBOT\x01] Missed shot due to \x07DEATH\x01\n", [255, 0, 0, 255]
             shots.shift()
