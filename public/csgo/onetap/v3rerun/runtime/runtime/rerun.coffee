@@ -90,7 +90,9 @@ apply = ->
         __reality: globalthis
         __filename: realglobals.__filename
 
-        Reference: (pathA, pathB, pathC, pathD) -> new Reference [pathA, pathB, pathC, pathD]
+        Reference: (pathA, pathB, pathC, pathD) ->
+            return new Reference pathA if typeof(pathA) == "object"
+            new Reference [pathA, pathB, pathC, pathD]
         Entity: Entity
 
         Vector2: Vector2
@@ -128,7 +130,6 @@ apply = ->
             TextSizeCustom: realglobals.Render.TextSizeCustom
             GetScreenSize: -> Vector2.unpack realglobals.Render.GetScreenSize()
         UI:
-            Reference: (pathA, pathB, pathC, pathD) -> new Reference [pathA, pathB, pathC, pathD]
             IsMenuOpen: realglobals.UI.IsMenuOpen
             AddCheckbox: uielement_wrapper realglobals.UI.AddCheckbox
             AddSliderInt: uielement_wrapper realglobals.UI.AddSliderInt
