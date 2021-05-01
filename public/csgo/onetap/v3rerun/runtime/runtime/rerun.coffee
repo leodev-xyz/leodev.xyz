@@ -59,8 +59,8 @@ apply = ->
         array = realglobals.Entity.GetRenderBox @entityindex
         [array[0], new Vector2(array[1], array[2]), new Vector2 array[3], array[4]]
 
-    Entity::GetProp = (classname, table, propname) -> realglobals.Entity.GetProp @entityindex, classname, table, propname
-    Entity::SetProp = (classname, table, propname, value) -> realglobals.Entity.SetProp @entityindex, classname, table, propname, value
+    Entity::GetProp = (table, propname) -> realglobals.Entity.GetProp @entityindex, table, propname
+    Entity::SetProp = (table, propname, value) -> realglobals.Entity.SetProp @entityindex, table, propname, value
     Entity::GetHitboxPositions = (hitboxindex) -> Vector3.unpack realglobals.Entity.GetHitboxPosition @entityindex, hitboxindex
     Entity::GetEyePosition = -> Vector3.unpack realglobals.Entity.GetEyePosition @entityindex
 
