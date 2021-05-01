@@ -14,8 +14,8 @@
             {{{docsidebarlink ref=@key name=this}}}
             {{/each}}
         </div>
-        <div class="px-1 md:px-2 w-full h-full overflow-auto">
-            <div class="markdown">
+        <div class="w-full h-full overflow-auto">
+            <div class="markdown px-1 md:px-2">
                 {{{markdown}}}
             </div>
             {{> footer}}
@@ -23,7 +23,7 @@
     </div>
     {{else}}
     <div class="h-[calc(100vh-1.5rem)] w-full overflow-auto">
-        <div class="markdown">
+        <div class="markdown px-1 md:px-2">
             {{{markdown}}}
         </div>
         {{> footer}}
