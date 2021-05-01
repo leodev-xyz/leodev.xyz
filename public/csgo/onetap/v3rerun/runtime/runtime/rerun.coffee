@@ -155,7 +155,10 @@ apply = ->
             Line: (entity, start, end) ->
                 array = realglobals.Trace.Line entity.entityindex, start, end
                 [new Entity(array[0]), array[1]]
-            Bullet: realglobals.Trace.Bullet
+            Bullet: (source, target, start, end) ->
+                array = realglobals.Trace.Bullet source.entityindex, target.entityindex, start, end
+                return undefined unless array and array[0] > 0
+                [new Entity(array[0]), array[1], array[2], array[3]]
         UserCMD: shallowcopy realglobals.UserCMD
         AntiAim: shallowcopy realglobals.AntiAim
         Exploit: shallowcopy realglobals.Exploit
