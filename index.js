@@ -211,7 +211,7 @@ const prepare_scripts = async (where, scriptname, script, settings) => {
     }
     if(path.extname(script) === ".js") {
         scripts.push([script, source]);
-        source = await minify(source, {ecma: 5, format: {ascii_only: true}}).code;
+        source = (await minify(source, {ecma: 5, format: {ascii_only: true}})).code;
         scripts.push([script.substr(0, script.length - 3) + ".min.js", source]);
     }
     if(path.extname(script) === ".moon" || path.extname(script) === ".yue") {
