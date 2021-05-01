@@ -18,7 +18,7 @@ apply = ->
     Material::Destroy = -> realglobals.Material.Destroy @name
 
     # Reference
-    Reference = (pathA, pathB, pathC, pathD) -> @path = [pathA, pathB, pathC, pathD]
+    Reference = (@path) ->
 
     Reference::GetValue = -> realglobals.UI.GetValue @path[0], @path[1], @path[2], @path[3]
     Reference::GetString = -> realglobals.UI.GetString @path[0], @path[1], @path[2], @path[3]
@@ -34,11 +34,11 @@ apply = ->
     uielement_wrapper = (func) ->
         (name, arg1, arg2, arg3) ->
             func name, arg1, arg2, arg3
-            new Reference "Misc", "JAVASCRIPT", "Script Items", name
+            new Reference ["Misc", "JAVASCRIPT", "Script Items", name]
 
     # Entity stuff
 
-    Entity = (entityindex) -> @entityindex = entityindex
+    Entity = (@entityindex) ->
 
     Entity::IsTeammate = -> realglobals.Entity.IsTeammate @entityindex
     Entity::IsEnemy = -> realglobals.Entity.IsEnemy @entityindex
@@ -90,7 +90,7 @@ apply = ->
         __reality: globalthis
         __filename: realglobals.__filename
 
-        Reference: Reference
+        Reference: (pathA, pathB, pathC, pathD) -> new Reference [pathA, pathB, pathC, pathD]
         Entity: Entity
 
         Vector2: Vector2
@@ -128,7 +128,7 @@ apply = ->
             TextSizeCustom: realglobals.Render.TextSizeCustom
             GetScreenSize: -> Vector2.unpack realglobals.Render.GetScreenSize()
         UI:
-            Reference: (pathA, pathB, pathC, pathD) -> new Reference pathA, pathB, pathC, pathD
+            Reference: (pathA, pathB, pathC, pathD) -> new Reference [pathA, pathB, pathC, pathD]
             IsMenuOpen: realglobals.UI.IsMenuOpen
             AddCheckbox: uielement_wrapper realglobals.UI.AddCheckbox
             AddSliderInt: uielement_wrapper realglobals.UI.AddSliderInt
