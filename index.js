@@ -409,7 +409,15 @@ const generate_blog = (path) => {
     await generate_scripts("csgo/onetap/v3/scripts");
     //   V3 Re:Run
     fs.ensureDirSync("dist/csgo/onetap/v3rerun/docs");
-    // generate_docs()
+    generate_docs({
+        "csgo/onetap/v3rerun/docs/index.md": "csgo/onetap/v3rerun/docs/index.html",
+        "csgo/onetap/v3rerun/docs/classes.md": "csgo/onetap/v3rerun/docs/classes.html",
+        "csgo/onetap/v3rerun/docs/constants.md": "csgo/onetap/v3rerun/docs/constants.html",
+        "csgo/onetap/v3rerun/docs/globals.md": "csgo/onetap/v3rerun/docs/globals.html",
+        "csgo/onetap/v3rerun/docs/callbacks.md": "csgo/onetap/v3rerun/docs/callbacks.html"
+    }, builtin_doclinks.javascript)
+    generate_snippets("csgo/onetap/v3rerun/docs/globals.md", "csgo/onetap/v3rerun/snippets.js.json", "js", ["javascript", "typescript"]);
+    generate_snippets("csgo/onetap/v3rerun/docs/globals.md", "csgo/onetap/v3rerun/snippets.coffee.json", "coffee", ["coffeescript"]);
     await generate_scripts("csgo/onetap/v3rerun/runtime");
     await generate_scripts("csgo/onetap/v3rerun/scripts");
     //   V4

@@ -6,6 +6,7 @@ module.exports = {
         string: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
         number: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
         boolean: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+        function: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions"
     },
     "lua": {
         string: "https://www.lua.org/pil/2.4.html",
