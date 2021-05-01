@@ -86,7 +86,7 @@ display_icons = {
 exceptions = {
     "glock 18": "glock",
     "p2000": "hkp2000",
-    "dual barettas": "elite",
+    "dual berettas": "elite",
     "cz75 auto": "cz75a",
     "usp s": "usp_silencer",
     "desert eagle": "deagle",
@@ -111,7 +111,7 @@ priority_array = [
     [display_icons["smoke grenade"]],
     [display_icons.flashbang],
     [display_icons["decoy grenade"]],
-    [display_icons["glock 18"], display_icons.p2000, display_icons["dual barettas"], display_icons.p250, display_icons["five seven"], display_icons["cz75 auto"], 
+    [display_icons["glock 18"], display_icons.p2000, display_icons["dual berettas"], display_icons.p250, display_icons["five seven"], display_icons["cz75 auto"], 
      display_icons["usp s"], display_icons["desert eagle"], display_icons["r8 revolver"], display_icons["tec 9"]],
     [],
     [display_icons.defuse_kit],
