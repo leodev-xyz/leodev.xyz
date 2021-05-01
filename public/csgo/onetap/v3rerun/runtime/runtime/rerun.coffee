@@ -64,7 +64,7 @@ apply = ->
     Entity::GetHitboxPositions = (hitboxindex) -> Vector3.unpack realglobals.Entity.GetHitboxPosition @entityindex, hitboxindex
     Entity::GetEyePosition = -> Vector3.unpack realglobals.Entity.GetEyePosition @entityindex
 
-    # Vectors/Angles
+    # Vectors/Angle
 
     Vector2 = (@x, @y) ->
 
@@ -76,10 +76,10 @@ apply = ->
     Vector3::pack = -> [@x, @y, @z]
     Vector3.unpack = (array) -> new Vector3 array[0], array[1], array[2]
 
-    Angles = (@pitch, @yaw, @roll) ->
+    Angle = (@pitch, @yaw, @roll) ->
 
-    Angles::pack = -> [@pitch, @yaw, @roll]
-    Angles.unpack = (array) -> new Angles array[0], array[1], array[2]
+    Angle::pack = -> [@pitch, @yaw, @roll]
+    Angle.unpack = (array) -> new Angle array[0], array[1], array[2]
 
     RGBA = (@r, @g, @b, @a) ->
 
@@ -97,7 +97,7 @@ apply = ->
 
         Vector2: Vector2
         Vector3: Vector3
-        Angles: Angles
+        Angle: Angle
         RGBA: RGBA
 
         Globals: shallowcopy realglobals.Globals
@@ -187,12 +187,12 @@ apply = ->
         realglobals.Cheat.RegisterCallback name, "_callback_temp"
         globalthis._callback_temp = undefined
 
-    globals.Local.GetViewAngles = -> Angles.unpack realglobals.Local.GetViewAngles()
-    globals.Local.SetViewAngles = (angles) -> realglobals.Local.SetViewAngles packer angles
+    globals.Local.GetViewAngle = -> Angle.unpack realglobals.Local.GetViewAngle()
+    globals.Local.SetViewAngle = (Angle) -> realglobals.Local.SetViewAngle packer Angle
 
     globals.UserCMD.SetMovement = (movement) -> realglobals.UserCMD.SetMovement packer movement
     globals.UserCMD.GetMovement = -> Vector3.unpack realglobals.UserCMD.GetMovement
-    globals.UserCMD.SetAngles = (angles) -> realglobals.UserCMD.SetAngles packer angles
+    globals.UserCMD.SetAngle = (Angle) -> realglobals.UserCMD.SetAngle packer Angle
 
     # overwrite globals now
     this[name] = undefined for name, value of this
