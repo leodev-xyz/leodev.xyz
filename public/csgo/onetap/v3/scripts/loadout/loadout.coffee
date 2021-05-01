@@ -142,7 +142,7 @@ draw = ->
     enemycache[player] = true for player in enemies
     for player, _ of enemycache
         player = parseInt player  # keys always string
-        enemies.push player unless enemies.indexOf(player) >= 0
+        enemies.push player if enemies.indexOf(player) == -1 && Entity.IsEnemy player  # just to be sure
 
     for player in enemies
         continue unless Entity.GetProp(player, "CCSPlayerResource", "m_iHealth") > 0
