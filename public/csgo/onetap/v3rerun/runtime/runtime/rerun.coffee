@@ -57,7 +57,7 @@ apply = ->
 
     Entity::GetRenderBox = -> 
         array = realglobals.Entity.GetRenderBox @entityindex
-        [array[0], Vector2.unpack(array[1]), Vector2.unpack array[2]]
+        [array[0], new Vector2(array[1], array[2]), new Vector2 array[3], array[4]]
 
     Entity::GetProp = (classname, table, propname) -> realglobals.Entity.GetProp @entityindex, classname, table, propname
     Entity::SetProp = (classname, table, propname, value) -> realglobals.Entity.SetProp @entityindex, classname, table, propname, value
