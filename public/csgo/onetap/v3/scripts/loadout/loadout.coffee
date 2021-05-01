@@ -160,6 +160,11 @@ draw = ->
         name = "Enemy " + COLORS[Entity.GetProp player, "CCSPlayerResource", "m_iCompTeammateColor"] unless PRINTABLE.exec name
         Render.StringCustom position[0] + 4, position[1] + height + 19, 0, name, [0, 0, 0, 100], font
         Render.StringCustom position[0] + 3, position[1] + height + 18, 0, name, [239, 239, 239, 255], font
+        
+        money = Entity.GetProp(player, "CCSPlayer", "m_iAccount") + "$"
+        width = Render.TextSizeCustom(name, font)[0]
+        Render.StringCustom position[0] + width + 11, position[1] + height + 19, 0, money, [0, 0, 0, 100], font
+        Render.StringCustom position[0] + width + 10, position[1] + height + 18, 0, money, [0, 144, 81, 255], font
 
         width = 0
 
