@@ -235,9 +235,13 @@ on_player_death = ->
     return unless weaponcache[player] && Entity.IsEnemy player
     weaponcache[player] = {weapons: [], selected: undefined}
 
+on_cs_game_disconnected = ->
+    enemycache = {}
+
 
 Cheat.RegisterCallback "Draw", "onDraw"
 Cheat.RegisterCallback "item_pickup", "on_item_pickup"
 Cheat.RegisterCallback "item_remove", "on_item_remove"
 Cheat.RegisterCallback "item_equip", "on_item_equip"
 Cheat.RegisterCallback "player_death", "on_player_death"
+Cheat.RegisterCallback "cs_game_disconnected", "on_cs_game_disconnected"
