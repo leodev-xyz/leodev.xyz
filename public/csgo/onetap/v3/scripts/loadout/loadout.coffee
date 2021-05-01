@@ -12,6 +12,9 @@ position[1] = screen[1] / 2 - 100 unless position[1]
 
 moving = false
 
+PRINTABLE = /[a-zA-Z0-9!"#$%&'()*+,-.\/:;<=>?@[\\\]^_`{|}~]/
+COLORS = ["Yellow", "Purple", "Green", "Blue", "Orange"]
+
 
 display_icons = {
     "glock 18": "d",
@@ -154,6 +157,7 @@ draw = ->
             weaponcache[player] = {weapons: icons, selected: display_icons[Entity.GetName Entity.GetWeapon player]}
 
         name = Entity.GetName player
+        name = "Enemy " + COLORS[Entity.GetProp player, "CCSPlayerResource", "m_iCompTeammateColor"] unless PRINTABLE.exec name
         Render.StringCustom position[0] + 4, position[1] + height + 19, 0, name, [0, 0, 0, 100], font
         Render.StringCustom position[0] + 3, position[1] + height + 18, 0, name, [239, 239, 239, 255], font
 
