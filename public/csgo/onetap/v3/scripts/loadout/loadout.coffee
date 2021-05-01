@@ -105,6 +105,7 @@ weaponname_icons["weapon_" + (if exceptions[key] then exceptions[key] else key.r
 priority_array = [
     [display_icons.kevlar, display_icons.kelvar_helmet],
     [display_icons.knife],
+    [display_icons["zeus x27"]],
     [display_icons.molotov, display_icons["incendiary grenade"]],
     [display_icons["high explosive grenade"]],
     [display_icons["smoke grenade"]],
