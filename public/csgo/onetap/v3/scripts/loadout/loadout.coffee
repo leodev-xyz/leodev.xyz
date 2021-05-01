@@ -13,7 +13,7 @@ position[1] = screen[1] / 2 - 100 unless position[1]
 moving = false
 
 
-icons = {
+display_icons = {
     "glock 18": "d",
     "p2000": "o",
     "dual berettas": "b",
@@ -77,41 +77,51 @@ icons = {
     "skeleton knife": "G",
     "knife": "G",
 
-    player: "9",
     defuse_kit: "U",
     c4: "N",
-    skull: "\!",
     kevlar: "S",
     kelvar_helmet: "T",
-
-    rage: {
-        general: "T",
-        pistol: "P",
-        heavy_pistol: "a",
-        scout: "F",
-        awp: "g",
-        autosniper: "D",
-    },
-    legit: {
-        general: "T",
-        pistol: "P",
-        rifle: "e",
-        sniper: "g",
-        smg: "q",
-    },
-    visual: {
-        self: "9",
-        enemies: "\_",
-        friendlies: "\%",
-        world: "\&",
-    },
-    misc: {
-        javascript: "\^",
-        skins: "Z",
-        perf_and_info: "\#",
-        general: "\@",
-    },
 }
+
+exceptions = {
+    "glock 18": "glock",
+    "p2000": "hkp2000",
+    "dual barettas": "elite",
+    "cz75 auto": "cz75a",
+    "usp s": "usp_silencer",
+    "desert eagle": "deagle",
+    "r8 revolver": "revolver",
+    "pp bizon": "bizon",
+    "high explosive grenade": "hegrenade",
+    "decoy grenade": "decoy",
+    "incendiary grenade": "incgrenade",
+    "zeus x27": "taser"
+}
+weaponname_icons = {}
+weaponname_icons["weapon_" + (if exceptions[key] then exceptions[key] else key.replace(/ /g, ""))] = value for key, value of display_icons
+
+# ARMOR KNIFE TASER NADES PISTOL OTHER KIT BOMB
+
+priority_array = [
+    [display_icons.kevlar, display_icons.kelvar_helmet],
+    [display_icons.knife],
+    [display_icons.molotov, display_icons["incendiary grenade"]],
+    [display_icons["high explosive grenade"]],
+    [display_icons["smoke grenade"]],
+    [display_icons.flashbang],
+    [display_icons["decoy grenade"]],
+    [display_icons["glock 18"], display_icons.p2000, display_icons["dual barettas"], display_icons.p250, display_icons["five seven"], display_icons["cz75 auto"], 
+     display_icons["usp s"], display_icons["desert eagle"], display_icons["r8 revolver"], display_icons["tec 9"]],
+    [],
+    [display_icons.defuse_kit],
+    [display_icons.c4],
+]
+priorities = {}
+priorities[weapon] = 9 for _, weapon of display_icons
+priorities[weapon] = index for weapon in value for index, value of priority_array
+
+weaponcache = {}
+enemycache = {}
 
 draw = ->
     return unless Entity.IsValid(Entity.GetLocalPlayer()) || UI.IsMenuOpen()
@@ -127,8 +137,20 @@ draw = ->
     Render.StringCustom position[0] + (200 - size[0]) / 2 + 1, position[1] + (18 - size[1]) / 2 + 1, 0, "loadout", [0, 0, 0, 100], font
     Render.StringCustom position[0] + (200 - size[0]) / 2, position[1] + (18 - size[1]) / 2, 0, "loadout", [239, 239, 239, 255], font
 
-    for player in Entity.GetEnemies()
-        continue unless Entity.IsAlive player
+    enemies = Entity.GetEnemies()
+    enemycache[player] = true for player in enemies
+    for player, _ of enemycache
+        player = parseInt player  # keys always string
+        enemies.push player unless enemies.indexOf(player) >= 0
+
+    for player in enemies
+        continue unless Entity.GetProp(player, "CCSPlayerResource", "m_iHealth") > 0
+        unless Entity.IsDormant player
+            icons = []
+            for weapon in Entity.GetWeapons player
+                icon = display_icons[Entity.GetName weapon]
+                icons.push icon if icon
+            weaponcache[player] = {weapons: icons, selected: display_icons[Entity.GetName Entity.GetWeapon player]}
 
         name = Entity.GetName player
         Render.StringCustom position[0] + 4, position[1] + height + 19, 0, name, [0, 0, 0, 100], font
@@ -136,25 +158,20 @@ draw = ->
 
         width = 0
 
-        specialicons = []
+        icons = if weaponcache[player] then weaponcache[player].weapons.slice() else []
         if Entity.GetProp player, "CCSPlayer", "m_bHasHelmet"
-            specialicons.push icons.kelvar_helmet
+            icons.push display_icons.kelvar_helmet
         else if Entity.GetProp(player, "CCSPlayerResource", "m_iArmor") > 0
-            specialicons.push icons.kevlar
+            icons.push display_icons.kevlar
         if Entity.GetProp player, "CCSPlayer", "m_bHasDefuser"
-            specialicons.push icons.defuse_kit
-        
-        for icon in specialicons
+            icons.push display_icons.defuse_kit
+
+        icons.sort (a, b) -> priorities[a] - priorities[b]
+
+        active = if weaponcache[player] then weaponcache[player].selected else undefined
+        for icon in icons
             Render.String position[0] + width + 2, position[1] + height + 33, 0, icon, [0, 0, 0, 100], 5
-            Render.String position[0] + width + 1, position[1] + height + 32, 0, icon, [239, 239, 239, 255], 5
-            width += Render.TextSize(icon, 5)[0]
-        
-        active = Entity.GetWeapon player
-        for weapon in Entity.GetWeapons player
-            icon = icons[Entity.GetName weapon]
-            continue unless icon
-            Render.String position[0] + width + 2, position[1] + height + 33, 0, icon, [0, 0, 0, 100], 5
-            Render.String position[0] + width + 1, position[1] + height + 32, 0, icon, (if active == weapon then [255, 164, 1, 255] else [239, 239, 239, 255]), 5
+            Render.String position[0] + width + 1, position[1] + height + 32, 0, icon, (if active == icon then [255, 164, 1, 255] else [239, 239, 239, 255]), 5
             width += Render.TextSize(icon, 5)[0]
         
         height += 32
@@ -162,8 +179,7 @@ draw = ->
 
 rel_start = undefined
 drag = ->
-    unless UI.IsMenuOpen() && Input.IsKeyPressed 0x01
-        return rel_start = undefined
+    return rel_start = undefined unless UI.IsMenuOpen() && Input.IsKeyPressed 0x01
     cursor = Input.GetCursorPosition()
 
     rel = [
@@ -187,4 +203,41 @@ onDraw = ->
     drag()
     draw()
 
+
+on_item_pickup = ->
+    player = Entity.GetEntityFromUserID Event.GetInt "userid"
+    return unless Entity.IsEnemy player
+    weapon = weaponname_icons["weapon_" + Event.GetString "item"]
+    return unless weapon
+
+    weaponcache[player] = {weapons: [], selected: undefined} unless weaponcache[player]
+    weaponcache[player].weapons.push weapon
+
+on_item_remove = ->
+    player = Entity.GetEntityFromUserID Event.GetInt "userid"
+    return unless weaponcache[player] && Entity.IsEnemy player
+    weapon = weaponname_icons["weapon_" + Event.GetString "item"]
+    return unless weapon
+
+    index = weaponcache[player].weapons.indexOf weapon
+    weaponcache[player].weapons.splice index, 1 if index >= 0
+
+on_item_equip = ->
+    player = Entity.GetEntityFromUserID Event.GetInt "userid"
+    return unless weaponcache[player] && Entity.IsEnemy player
+    weapon = weaponname_icons["weapon_" + Event.GetString "item"]
+    return unless weapon
+
+    weaponcache[player].selected = weapon
+
+on_player_death = ->
+    player = Entity.GetEntityFromUserID Event.GetInt "userid"
+    return unless weaponcache[player] && Entity.IsEnemy player
+    weaponcache[player] = {weapons: [], selected: undefined}
+
+
 Cheat.RegisterCallback "Draw", "onDraw"
+Cheat.RegisterCallback "item_pickup", "on_item_pickup"
+Cheat.RegisterCallback "item_remove", "on_item_remove"
+Cheat.RegisterCallback "item_equip", "on_item_equip"
+Cheat.RegisterCallback "player_death", "on_player_death"
