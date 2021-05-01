@@ -406,11 +406,12 @@ const generate_blog = (path) => {
     }, builtin_doclinks.javascript);
     generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
     generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.coffee.json", "coffee", ["coffeescript"]);
-    generate_scripts("csgo/onetap/v3/scripts");
+    await generate_scripts("csgo/onetap/v3/scripts");
     //   V3 Re:Run
     fs.ensureDirSync("dist/csgo/onetap/v3rerun/docs");
     // generate_docs()
     await generate_scripts("csgo/onetap/v3rerun/runtime");
+    await generate_scripts("csgo/onetap/v3rerun/scripts");
     //   V4
     fs.ensureDirSync("dist/csgo/onetap/v4/docs");
     generate_docs({
