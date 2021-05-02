@@ -1,0 +1,8 @@
+{
+    "name": "HvH Utils",
+    "version": "1.0.0",
+    "description": "hvhutils.md",
+    "files": [
+        "hvhutils.coffee"
+    ]
+}
