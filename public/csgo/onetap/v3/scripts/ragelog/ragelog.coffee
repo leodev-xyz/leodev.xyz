@@ -134,7 +134,7 @@ on_weapon_fire = ->
 on_player_hurt = ->
     if Entity.GetEntityFromUserID(Event.GetInt "attacker") == Entity.GetLocalPlayer() && shots.length > 0
         this_tick_shot = 2
-        print "[\x04RAGEBOT\x01] Hit \x03" + Entity.GetName(Entity.GetEntityFromUserID Event.GetInt "userid") + "\x01 for \x0b" + Event.GetInt("dmg_health") + "\x01 damage in " + (HITBOX[Event.GetInt "hitgroup"] == BONEBOXES[shots[0].hitbox] ? "\x0b" : "\x07") + HITBOX[Event.GetInt "hitgroup"] + "\x01\n", [0, 255, 0, 255]
+        print "[\x04RAGEBOT\x01] Hit \x03" + Entity.GetName(Entity.GetEntityFromUserID Event.GetInt "userid") + "\x01 for \x0b" + Event.GetInt("dmg_health") + "\x01 damage in " + (if HITBOX[Event.GetInt "hitgroup"] == BONEBOXES[shots[0].hitbox] then "\x0b" else "\x07") + HITBOX[Event.GetInt "hitgroup"] + "\x01\n", [0, 255, 0, 255]
 
 on_player_death = ->
     if Entity.GetEntityFromUserID(Event.GetInt "userid") == Entity.GetLocalPlayer()
