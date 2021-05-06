@@ -445,4 +445,8 @@ const generate_blog = (path) => {
     generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.lua.json", "lua", ["lua"]);
     generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.moon.json", "moon", ["moonscript", "yuescript"]);
     await generate_scripts("csgo/aimware/v5/scripts");
+
+
+    // neverlose
+    fs.ensureDirSync("dist/csgo/neverlose/v2/docs");
 })();
