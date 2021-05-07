@@ -14,6 +14,8 @@ const tmpdir = require("os").tmpdir;
 
 
 const builtin_doclinks = require("./doclinks.js");
+const Redirector = require("./redirects.js");
+
 
 let doclinks = {};
 let doclinks_current_only = {};
@@ -393,8 +395,12 @@ const generate_blog = (path) => {
 (async function() {
     fs.copySync("public/static", "dist/static");
 
+    const redirects = new Redirector();
+    redirects.addRedirect("/discord", "https://discord.gg/FCnK6xp");
+    fs.writeFileSync("dist/_redirects", redirects.export());
+
     (function() { // SCOPE
-        template = handlebars.compile(fs.readFileSync("src/home.hbs").toString());
+        const template = handlebars.compile(fs.readFileSync("src/home.hbs").toString());
         const html = template();
         fs.writeFileSync(`dist/index.html`, html);
     })()
