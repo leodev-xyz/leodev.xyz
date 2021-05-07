@@ -13,10 +13,10 @@ Onetap uses the [Duktape](https://duktape.org/) v2.3 javascript engine.
 
 ## Visual Studio Snippets
 
-Visual Studio Snippets for V3:
+Visual Studio Snippets for Onetap V3:
 
 - [Javascript / Typescript](/csgo/onetap/v3/snippets.js.json)
-- [Coffeescript (experimental)](/csgo/onetap/v3/snippets.coffee.json)
+- [Coffeescript](/csgo/onetap/v3/snippets.coffee.json)
 
 ### Adding snippets
 

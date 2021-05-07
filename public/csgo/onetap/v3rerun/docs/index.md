@@ -12,10 +12,10 @@ If you want to know how to use Re:Run, [click here](/csgo/onetap/v3rerun/runtime
 
 ## Visual Studio Snippets
 
-Visual Studio Snippets for V3 Re:Run:
+Visual Studio Snippets for Onetap V3 Re:Run:
 
 - [Javascript / Typescript](/csgo/onetap/v3rerun/snippets.js.json)
-- [Coffeescript (experimental)](/csgo/onetap/v3rerun/snippets.coffee.json)
+- [Coffeescript](/csgo/onetap/v3rerun/snippets.coffee.json)
 
 ### Adding snippets
 
