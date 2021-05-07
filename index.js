@@ -401,9 +401,9 @@ const generate_blog = (path) => {
     //   V3
     fs.ensureDirSync("dist/csgo/onetap/v3/docs");
     generate_docs({
-        "csgo/onetap/v3/docs/index.md": "csgo/onetap/v3/docs/index.html",
-        "csgo/onetap/v3/docs/types.md": "csgo/onetap/v3/docs/types.html",
-        "csgo/onetap/v3/docs/globals.md": "csgo/onetap/v3/docs/globals.html",
+        "csgo/onetap/v3/docs/index.md":     "csgo/onetap/v3/docs/index.html",
+        "csgo/onetap/v3/docs/types.md":     "csgo/onetap/v3/docs/types.html",
+        "csgo/onetap/v3/docs/globals.md":   "csgo/onetap/v3/docs/globals.html",
         "csgo/onetap/v3/docs/callbacks.md": "csgo/onetap/v3/docs/callbacks.html"
     }, builtin_doclinks.javascript);
     generate_snippets("csgo/onetap/v3/docs/globals.md", "csgo/onetap/v3/snippets.js.json", "js", ["javascript", "typescript"]);
@@ -412,10 +412,10 @@ const generate_blog = (path) => {
     //   V3 Re:Run
     fs.ensureDirSync("dist/csgo/onetap/v3rerun/docs");
     generate_docs({
-        "csgo/onetap/v3rerun/docs/index.md": "csgo/onetap/v3rerun/docs/index.html",
-        "csgo/onetap/v3rerun/docs/classes.md": "csgo/onetap/v3rerun/docs/classes.html",
+        "csgo/onetap/v3rerun/docs/index.md":     "csgo/onetap/v3rerun/docs/index.html",
+        "csgo/onetap/v3rerun/docs/classes.md":   "csgo/onetap/v3rerun/docs/classes.html",
         "csgo/onetap/v3rerun/docs/constants.md": "csgo/onetap/v3rerun/docs/constants.html",
-        "csgo/onetap/v3rerun/docs/globals.md": "csgo/onetap/v3rerun/docs/globals.html",
+        "csgo/onetap/v3rerun/docs/globals.md":   "csgo/onetap/v3rerun/docs/globals.html",
         "csgo/onetap/v3rerun/docs/callbacks.md": "csgo/onetap/v3rerun/docs/callbacks.html"
     }, builtin_doclinks.javascript)
     generate_snippets("csgo/onetap/v3rerun/docs/globals.md", "csgo/onetap/v3rerun/snippets.js.json", "js", ["javascript", "typescript"]);
@@ -425,9 +425,9 @@ const generate_blog = (path) => {
     //   V4
     fs.ensureDirSync("dist/csgo/onetap/v4/docs");
     generate_docs({
-        "csgo/onetap/v4/docs/index.md": "csgo/onetap/v4/docs/index.html",
-        "csgo/onetap/v4/docs/types.md": "csgo/onetap/v4/docs/types.html",
-        "csgo/onetap/v4/docs/globals.md": "csgo/onetap/v4/docs/globals.html",
+        "csgo/onetap/v4/docs/index.md":     "csgo/onetap/v4/docs/index.html",
+        "csgo/onetap/v4/docs/types.md":     "csgo/onetap/v4/docs/types.html",
+        "csgo/onetap/v4/docs/globals.md":   "csgo/onetap/v4/docs/globals.html",
         "csgo/onetap/v4/docs/callbacks.md": "csgo/onetap/v4/docs/callbacks.html",
         "csgo/onetap/v4/docs/migrating.md": "csgo/onetap/v4/docs/migrating.html"
     }, builtin_doclinks.javascript);
@@ -439,10 +439,10 @@ const generate_blog = (path) => {
     //   V5
     fs.ensureDirSync("dist/csgo/aimware/v5/docs");
     generate_docs({
-        "csgo/aimware/v5/docs/index.md": "csgo/aimware/v5/docs/index.html",
-        "csgo/aimware/v5/docs/callbacks.md": "csgo/aimware/v5/docs/callbacks.html",
-        "csgo/aimware/v5/docs/classes.md": "csgo/aimware/v5/docs/classes.html",
-        "csgo/aimware/v5/docs/globals.md": "csgo/aimware/v5/docs/globals.html",
+        "csgo/aimware/v5/docs/index.md":      "csgo/aimware/v5/docs/index.html",
+        "csgo/aimware/v5/docs/callbacks.md":  "csgo/aimware/v5/docs/callbacks.html",
+        "csgo/aimware/v5/docs/classes.md":    "csgo/aimware/v5/docs/classes.html",
+        "csgo/aimware/v5/docs/globals.md":    "csgo/aimware/v5/docs/globals.html",
         "csgo/aimware/v5/docs/ressources.md": "csgo/aimware/v5/docs/ressources.html"
     }, builtin_doclinks.lua)
     generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.lua.json", "lua", ["lua"]);
