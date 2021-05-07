@@ -42,10 +42,11 @@ handlebars.registerHelper("include_markdown", options => {
     return `<div class="markdown">${markdown}</div>`;
 })
 handlebars.registerHelper("docsidebarlink", options => {
-    const name = options.hash.name.split(".");
+    const sep = /:/.test(options.hash.name) ? ":" : ".";
+    const name = options.hash.name.split(sep);
     if(name.length === 1)
         return `<a class="block mt-2 font-bold" href="#${options.hash.ref}">${name[name.length - 1]}</a>`
-    return `<a class="block" href="#${options.hash.ref}">${name.slice(0, -1).join(".")}.<span class="font-semibold">${name[name.length - 1]}</span></a>`
+    return `<a class="block" href="#${options.hash.ref}">${name.slice(0, -1).join(sep)}${sep}<span class="font-semibold">${name[name.length - 1]}</span></a>`
 })
 
 const LICENSE_CORE = `(c) Copyright LeoDeveloper 2020 - ${new Date().getFullYear()}\nReleased under the MIT license at https://leodeveloper.pages.dev\nVisit https://leodeveloper.pages.dev/license.html for more information.`
@@ -81,14 +82,15 @@ marked.use({renderer: {
         // this allows for links like ":link:someotherid:shown text"
         const parts = text.split(":");
         const id = parts.slice(2).join("-");
-        const name = parts[parts.length - 1].split(".");
         doclinks[id] = `/${currentlyrendering}#${id}`
         if(!doclinks_current_only[id]) doclinks_current_only[id] = parts[parts.length - 1];
         const prefix = (in_definition === 2 ? "</div>" : "") + `<a href="#${id}" class="anchor w-4 h-4 mr-1"><img class="inline w-4 h-4 invisible" src="/static/svg/anchor.svg"></img></a>`;
         in_definition = 1;
+        const sep = /:/.test(parts[parts.length - 1]) ? ":" : ".";
+        const name = parts[parts.length - 1].split(sep);
         if(name.length === 1)
             return prefix + `<strong id="${id}">${name[0]}</strong>`;
-        return prefix + `<span id="${id}">${name.slice(0, -1).join(".")}.<strong>${name[name.length - 1]}</strong></span>`;
+        return prefix + `<span id="${id}">${name.slice(0, -1).join(sep)}${sep}<strong>${name[name.length - 1]}</strong></span>`;
     },
     heading: (text, level) => {
         if(level === 1)
