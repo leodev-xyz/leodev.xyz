@@ -434,6 +434,7 @@ const generate_blog = (path) => {
     
     
     // aimware
+    //   V5
     fs.ensureDirSync("dist/csgo/aimware/v5/docs");
     generate_docs({
         "csgo/aimware/v5/docs/index.md": "csgo/aimware/v5/docs/index.html",
@@ -448,5 +449,6 @@ const generate_blog = (path) => {
 
 
     // neverlose
+    //   V2
     fs.ensureDirSync("dist/csgo/neverlose/v2/docs");
 })();
