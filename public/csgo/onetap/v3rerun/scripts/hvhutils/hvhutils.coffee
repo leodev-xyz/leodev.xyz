@@ -8,7 +8,7 @@ Counter = (interval, fn) ->
     last = -Infinity
     ->
         now = fn()
-        if now - last > interval
+        if now - last >= interval
             last = now
             return true
 
