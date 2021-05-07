@@ -219,15 +219,23 @@ const prepare_scripts = async (where, scriptname, script, settings) => {
         scripts.push([script, source]);
         const tmp = tmpdir();
         fs.writeFileSync(path.join(tmp, script), source);
-        await new Promise((resolve, reject) => {
-            exec((isMoon ? "moonc" : "yue") + " " + path.join(tmp, script), (err, stdout, stderr) => {
-                if(err) {
-                    console.error("Error while compiling " + (isMoon ? "moon" : "yue") + "script file:", stderr ? stderr : stdout);
-                    return reject(err);
-                }
-                resolve();
+        try {
+            await new Promise((resolve, reject) => {
+                exec((isMoon ? "moonc" : "yue") + " " + path.join(tmp, script), (err, stdout, stderr) => {
+                    if(err) {
+                        if(err.code === 127 && err.message.indexOf(`${(isMoon ? "moonc" : "yue")}: command not found`) >= 0) {
+                            console.error(`Please install ${(isMoon ? "moonscript" : "yuescript")} for compiling ${script}`);
+                        } else {
+                            console.error(`Error while compiling ${(isMoon ? "moon" : "yue")}script file: ${stderr ? stderr : stdout}`);
+                        }
+                        return reject(err);
+                    }
+                    resolve();
+                })
             })
-        })
+        } catch(e) {
+            return scripts;
+        }
         script = script.substr(0, script.length - path.extname(script).length) + ".lua"
         source = fs.readFileSync(path.join(tmp, script)).toString();
     }
