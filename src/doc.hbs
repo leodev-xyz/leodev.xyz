@@ -7,12 +7,21 @@
 <body class="text-black bg-white dark:text-white dark:bg-gray-800 overscroll-none">
     {{> header}}
     {{#if doclinks}}
-    <div class="lg:flex flex-auto h-[calc(100vh-1.5rem)] w-full">
-        <div class="hidden lg:block flex-shrink-0 overflow-y-auto h-full bg-gray-100 dark:bg-gray-900">
-            <p class="font-bold underline text-center">Quick access</p>
-            {{#each doclinks}}
-            {{{docsidebarlink ref=@key name=this}}}
-            {{/each}}
+    <div class="flex flex-auto h-[calc(100vh-1.5rem)] w-full">
+        <div class="flex-shrink-0 mx-2 overflow-y-auto h-full bg-gray-100 dark:bg-gray-900">
+            <div class="w-8 h-full transition-all bg-gray-100 dark:bg-gray-900 flex" id="sidebar">
+                <div class="hidden pl-2 w-56 overflow-auto no-scrollbar" id="sidebar-content">
+                    <p class="font-bold w-full underline text-center">Quick access</p>
+                    {{#each doclinks}}
+                    {{{docsidebarlink ref=@key name=this}}}
+                    {{/each}}
+                </div>
+                <div class="w-8">
+                    <button class="float-right w-full h-8 p-2 flex-none fill-current" id="sidebar-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="w-full h-full overflow-auto">
             <div class="markdown px-1 md:px-2">
@@ -20,6 +29,26 @@
             </div>
             {{> footer}}
         </div>
+
+        <script>
+            (function() {
+                let clicked = false;
+                document.getElementById("sidebar-button").addEventListener("click", function() {
+                    clicked = !clicked;
+                    const sidebar = document.getElementById("sidebar");
+                    const content = document.getElementById("sidebar-content");
+                    if(clicked) {
+                        sidebar.classList.remove("w-8");
+                        sidebar.classList.add("w-64");
+                        content.classList.remove("hidden");
+                    } else {
+                        sidebar.classList.add("w-8");
+                        sidebar.classList.remove("w-64");
+                        content.classList.add("hidden");
+                    }
+                })
+            })();
+        </script>
     </div>
     {{else}}
     <div class="h-[calc(100vh-1.5rem)] w-full overflow-auto">
