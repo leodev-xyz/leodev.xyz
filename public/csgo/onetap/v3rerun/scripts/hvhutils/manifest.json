@@ -4,5 +4,8 @@
     "description": "hvhutils.md",
     "files": [
         "hvhutils.coffee"
-    ]
+    ],
+    "settings": {
+        "bare": false
+    }
 }

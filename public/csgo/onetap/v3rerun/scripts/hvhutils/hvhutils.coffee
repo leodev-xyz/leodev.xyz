@@ -86,6 +86,37 @@ antiaim = [
     }
 ]
 
+conditions = [
+    {
+        label: "Knife",
+        fn: (player) -> player.GetWeapon().GetProp("CBaseAttributableItem", "m_iItemDefinitionIndex") & 0xFFFF == 107
+    },
+    {
+        label: "Nade",
+        fn: (player) -> player.GetWeapon().GetProp("CBaseAttributableItem", "m_iItemDefinitionIndex") & 0xFFFF == 113
+    },
+    {
+        label: "In Air",
+        fn: (player) -> player.GetProp("CCSPlayer", "m_fFlags") & 1
+    },
+    {
+        label: "Low Velocity",
+        fn: (player) ->
+            velocity = Math.sqrt player.GetProp("CCSPlayer", "m_vecVelocity[0]")[0] ** 2 + player.GetProp("CCSPlayer", "m_vecVelocity[0]")[1] ** 2
+            velocity > 5 && velocity < 60
+    },
+    {
+        label: "High Velocity",
+        fn: (player) ->
+            velocity = Math.sqrt player.GetProp("CCSPlayer", "m_vecVelocity[0]")[0] ** 2 + player.GetProp("CCSPlayer", "m_vecVelocity[0]")[1] ** 2
+            velocity > 100
+    },
+    {
+        label: "T side crouch",
+        fn: (player) -> player.GetProp("CCSPlayer", "m_iTeamNum") == 2 && player.GetProp("CCSPlayer", "m_flDuckAmount") >= 0.875
+    }
+]
+
 UI.AddLabel "------------------------------------------"
 
 onshot = UI.AddDropdown "Force onshot", ["Off", "Normal", "Smart"]
@@ -98,6 +129,10 @@ mindamage = []
 mindamage.push [number, UI.AddHotkey("Min damage override [" + (number + 1) + "]"), UI.AddSliderInt "Damage override [" + (number+1) + "]", 0, 150] for number in [0 .. MAX_MINDMG - 1]
 
 antiaimmode = UI.AddDropdown "AntiAim mode", antiaim.map (aa) -> aa.label
+
+conditiondd = UI.AddMultiDropdown "Conditions", conditions.map (cond) -> cond.label
+condition = []
+condition.push [UI.AddMultiDropdown("Actions [" + conditions[number].label + "]", ["Force Safepoint", "Override min damage"]), UI.AddSliderInt "Damage override [" + conditions[number].label + "]", 0, 150] for number in [0 .. conditions.length - 1]
 
 UI.AddLabel "------------------------------------------"
 
@@ -119,6 +154,15 @@ Cheat.RegisterCallback "CreateMove", ->
             if onshot.GetValue() == 1 or timewindow < SV_MAXUNLAG / 2
                 Ragebot.IgnoreTarget enemy if timewindow <= 0
                 Ragebot.ForceTargetMinimumDamage enemy, 101 if timewindow > 0
+
+    if conditiondd.GetValue() > 0
+        for number in [0 .. conditions.length - 1]
+            continue unless conditiondd.GetValue() & 2 ** number && condition[number][0].GetValue()
+            for enemy in Entities.GetEnemies()
+                continue unless conditions[number].fn enemy
+                Ragebot.ForceTargetSafety enemy if condition[number][0].GetValue() & 1
+                Ragebot.ForceTargetMinimumDamage enemy, condition[number][1].GetValue() if condition[number][0].GetValue() & 2
+
 
     if mindamageamount.GetValue() > 0
         for number in [0 .. mindamageamount.GetValue() - 1]
@@ -150,16 +194,20 @@ Cheat.RegisterCallback "Draw", ->
         damageoverride[1].SetEnabled damageoverride[0] < mindamageamount.GetValue()
         damageoverride[2].SetEnabled damageoverride[0] < mindamageamount.GetValue()
 
-    Render.String 40, Render.GetScreenSize().y - 400, 0, "ONSHOT", (if onshotkey.IsHotkeyActive() then [109, 195, 18, 255] else [255, 0, 0, 255]), 4.6 if onshot.GetValue() > 0 and onshotindicator.GetValue()
+    for number in [0 .. conditions.length - 1]
+        condition[number][0].SetEnabled conditiondd.GetValue() & 2 ** number
+        condition[number][1].SetEnabled conditiondd.GetValue() & 2 ** number && condition[number][0].GetValue() & 2
+
+    Render.String 40, Render.GetScreenSize().y - 400, 0, "ONSHOT", (if onshotkey.IsHotkeyActive() then [109, 195, 18, 255] else [255, 0, 0, 255]), 4 if onshot.GetValue() > 0 and onshotindicator.GetValue()
     if mindamageamount.GetValue() > 0 and mindamageindicator.GetValue()
         found = false
         for number in [0 .. mindamageamount.GetValue() - 1]
             if mindamage[number][1].IsHotkeyActive()
-                Render.String 40, Render.GetScreenSize().y - 380, 0, "DMG : " + mindamage[number][2].GetValue(), [109, 195, 18, 255], 4.6
+                Render.String 40, Render.GetScreenSize().y - 380, 0, "DMG : " + mindamage[number][2].GetValue(), [109, 195, 18, 255], 4
                 found = true
                 break
         
-        Render.String 40, Render.GetScreenSize().y - 380, 0, "DMG", [255, 0, 0, 255], 4.6 unless found
+        Render.String 40, Render.GetScreenSize().y - 380, 0, "DMG", [255, 0, 0, 255], 4 unless found
 
 Cheat.RegisterCallback "Unload", ->
     AntiAim.SetOverride 0 if antiaimed

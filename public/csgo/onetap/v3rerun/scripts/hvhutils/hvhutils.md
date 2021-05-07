@@ -38,3 +38,11 @@ Miscellaneous script with features I just need.
   - Low real, sway fake
     - Real is switching between -29 and 29 every 1s
     - Sways fake
+
+- Conditions
+  - Knife
+  - Nade
+  - In Air
+  - Low Velocity
+  - High Velocity
+  - T side crouch
