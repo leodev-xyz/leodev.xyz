@@ -398,6 +398,7 @@ const generate_blog = (path) => {
         const html = template();
         fs.writeFileSync(`dist/index.html`, html);
     })()
+    generate_markdown("privacy.md", "Privacy Policy", "privacy.html");
     generate_markdown("license.md", "License", "license.html");
     generate_markdown("404.md", "404: Not Found", "404.html");
     
