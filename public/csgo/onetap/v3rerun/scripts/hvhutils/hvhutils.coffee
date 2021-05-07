@@ -95,7 +95,7 @@ onshotindicator = UI.AddCheckbox "Onshot indicator"
 mindamageamount = UI.AddSliderInt "Min damage overrides", 0, MAX_MINDMG
 mindamageindicator = UI.AddCheckbox "Damage override indicator"
 mindamage = []
-mindamage.push [number, UI.AddHotkey("Min damage override [" + (number + 1) + "]"), UI.AddSliderInt "Damage override [" + (number+1) + "]", 0, 150] for number in [0 .. MAX_MINDMG]
+mindamage.push [number, UI.AddHotkey("Min damage override [" + (number + 1) + "]"), UI.AddSliderInt "Damage override [" + (number+1) + "]", 0, 150] for number in [0 .. MAX_MINDMG - 1]
 
 antiaimmode = UI.AddDropdown "AntiAim mode", antiaim.map (aa) -> aa.label
 
@@ -121,7 +121,7 @@ Cheat.RegisterCallback "CreateMove", ->
                 Ragebot.ForceTargetMinimumDamage enemy, 101 if timewindow > 0
 
     if mindamageamount.GetValue() > 0
-        for number in [0 .. mindamageamount.GetValue()]
+        for number in [0 .. mindamageamount.GetValue() - 1]
             if mindamage[number][1].IsHotkeyActive()
                 Ragebot.ForceTargetMinimumDamage enemy, mindamage[number][2].GetValue() for enemy in Entities.GetEnemies()
                 break
@@ -153,7 +153,7 @@ Cheat.RegisterCallback "Draw", ->
     Render.String 40, Render.GetScreenSize().y - 400, 0, "ONSHOT", (if onshotkey.IsHotkeyActive() then [109, 195, 18, 255] else [255, 0, 0, 255]), 4.6 if onshot.GetValue() > 0 and onshotindicator.GetValue()
     if mindamageamount.GetValue() > 0 and mindamageindicator.GetValue()
         found = false
-        for number in [0 .. mindamageamount.GetValue()]
+        for number in [0 .. mindamageamount.GetValue() - 1]
             if mindamage[number][1].IsHotkeyActive()
                 Render.String 40, Render.GetScreenSize().y - 380, 0, "DMG : " + mindamage[number][2].GetValue(), [109, 195, 18, 255], 4.6
                 found = true
