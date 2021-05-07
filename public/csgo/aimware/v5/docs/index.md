@@ -1,7 +1,7 @@
 
 # Aimware V5 Documentation
 
-This documentation is for Aimware V5 because their's is outdated and doesn't have enough descriptions.
+This documentation is for Aimware V5 because their documentation is outdated and doesn't have enough descriptions.
 
 - [Callbacks](callbacks.html)
 - [Classes](classes.html)
