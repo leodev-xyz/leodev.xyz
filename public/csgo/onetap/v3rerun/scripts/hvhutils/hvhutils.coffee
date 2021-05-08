@@ -132,7 +132,7 @@ antiaimmode = UI.AddDropdown "AntiAim mode", antiaim.map (aa) -> aa.label
 
 conditiondd = UI.AddMultiDropdown "Conditions", conditions.map (cond) -> cond.label
 condition = []
-condition.push [UI.AddMultiDropdown("Actions [" + conditions[number].label + "]", ["Force Safepoint", "Override min damage"]), UI.AddSliderInt "Damage override [" + conditions[number].label + "]", 0, 150] for number in [0 .. conditions.length - 1]
+condition.push [UI.AddMultiDropdown("Actions [" + conditions[number].label + "]", ["Force Safepoint", "Override min damage", "Force Onshot"]), UI.AddSliderInt "Damage override [" + conditions[number].label + "]", 0, 150] for number in [0 .. conditions.length - 1]
 
 UI.AddLabel "------------------------------------------"
 
@@ -162,6 +162,11 @@ Cheat.RegisterCallback "CreateMove", ->
                 continue unless conditions[number].fn enemy
                 Ragebot.ForceTargetSafety enemy if condition[number][0].GetValue() & 1
                 Ragebot.ForceTargetMinimumDamage enemy, condition[number][1].GetValue() if condition[number][0].GetValue() & 2
+                if condition[number][0].GetValue() & 4
+                    timewindow = Math.max (if onshotable[enemy.entityindex] then onshotable[enemy.entityindex] + SV_MAXUNLAG - Globals.Curtime() else 0), 0
+                    if onshot.GetValue() != 2 or timewindow < SV_MAXUNLAG / 2
+                        Ragebot.IgnoreTarget enemy if timewindow <= 0
+                        Ragebot.ForceTargetMinimumDamage enemy, 101 if timewindow > 0
 
 
     if mindamageamount.GetValue() > 0
