@@ -491,3 +491,266 @@ Returns menu size.
 **:link:g_Panorama.Exec**(self, code: `:link:string`, panel: `:link:string`?): `:link:string`
 
 Executes panorama code and returns the result.
+
+
+## **:link:antiaim**
+
+// TODO: values
+
+**:link:antiaim.OverrideInverter**(inverted: `:link:boolean`)
+
+Overrides inverter.
+
+**:link:antiaim.OverrideLimit**(limit: `:link:number`)
+
+Overrides desync limit (between 0 and 1).
+
+**:link:antiaim.OverrideYawOffset**(offset: `:link:number`)
+
+Overrides yaw offset.
+
+**:link:antiaim.OverrideLBYOffset**(offset: `:link:number`)
+
+Overrides LBY offset.
+
+**:link:antiaim.OverridePitch**(pitch: `:link:number`)
+
+Overrides your pitch.
+
+**:link:antiaim.GetInverterState**(): `:link:boolean`
+
+Returns if you're inverted or not.
+
+**:link:antiaim.GetMinDesyncDelta**(): `:link:number`
+
+Returns minimal desync delta.
+
+**:link:antiaim.GetMaxDesyncDelta**(): `:link:number`
+
+Returns maximal desync delta.
+
+**:link:antiaim.GetFakeRotation**(): `:link:number`
+
+Returns the rotation of your fake.
+
+**:link:antiaim.OverrideDesyncOnShot**(mode: `:link:number`)
+
+Overrides desync on shot mode.
+
+|  Mode  |  Description                |
+| ------ | --------------------------- |
+|   0    |  disable override           |
+|   1    |  left                       |
+|   2    |  right                      |
+|   3    |  overlap on shot with fake  |
+|   4    |  opposite of fake           |
+
+**:link:antiaim.GetCurrentRealRotation**(): `:link:number`
+
+Returns the rotation of your real.
+
+
+## **:link:cheat**
+
+**:link:cheat.RegisterCallback**(callback_name: `:link:string`, callback: `:link:string`)
+
+Registers a callback.  
+See `:link:Callbacks` for a list of all possible callbacks.
+
+**:link:cheat.FireBullet**(attacker: `:link:C_BasePlayer`, start: `:link:Vector`, end: `:link:Vector`): `:link:firebullet_t`
+
+Simulates a bullet with wall penetration, damage fall off, armor calculations and everything.
+
+**:link:cheat.AngleToForward**(angle: `:link:QAngle`): `:link:Vector`
+
+Transforms an angle into a vector.
+
+**:link:cheat.VectorToAngle**(vector: `:link:Vector`): `:link:QAngle`
+
+Transforms a vector into an angle.
+
+**:link:cheat.IsMenuVisible**(): `:link:boolean`
+
+Returns if the menu is opened.
+
+**:link:cheat.GetMousePos**(): `:link:Vector2`
+
+Returns the position of the mouse.
+
+**:link:cheat.IsKeyDown**(key: `:link:number`): `:link:boolean`
+
+Returns if the key is pressed.
+
+For all possible keys check [this](https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes).
+
+**:link:cheat.GetCheatUserName**(): `:link:string`
+
+Returns the account username.
+
+**:link:cheat.GetBinds**(): Array[`:link:ActiveBind`]
+
+Returns a table with all binds.
+
+**:link:cheat.AddEvent**(name: `:link:string`)
+
+Creates an event (messages in the top right).
+
+**:link:cheat.AddNotify**(title: `:link:string`, name: `:link:string`)
+
+Creates a notification.
+
+
+## **:link:exploits**
+
+**:link:exploits.GetCharge**(): `:link:number`
+
+Returns the charge percentage.
+
+**:link:exploits.AllowCharge**(disallowed: `:link:boolean`)
+
+Allows/disallows charging.
+
+> **Warning**: `exploits.AllowCharge(true)` will **disallow** charging!
+
+**:link:exploits.ForceTeleport**()
+
+Forces localplayer to teleport if doubletap is charged.
+
+**:link:exploits.ForceCharge**()
+
+Forces doubletap to charge.
+
+**:link:exploits.OverrideDoubleTapSpeed**(speed: `:link:number`)
+
+Overrides how many ticks doubletap will charge.
+
+
+## **:link:fakelag**
+
+**:link:fakelag.Choking**(): `:link:boolean`
+
+Returns if the current packet is being choked.
+
+**:link:fakelag.ForceSend**()
+
+Chokes this tick and send packet on the next tick.
+
+**:link:fakelag.SentPackets**(): `:link:number`
+
+Returns how many packets were sent in a row without any choking.
+
+**:link:fakelag.SetState**(send_packet: `:link:boolean`)
+
+Whether to send the packet or not.
+
+
+## **:link:http**
+
+**:link:http.Get**(url: `:link:string`): `:link:string`
+
+Sends a GET request to the URL and returns the content.
+
+**:link:http.Post**(url: `:link:string`, params: `:link:string`): `:link:string`
+
+Sends a POST request to the URL and returns the content.  
+`params` will be the request body and the content type will be `application/x-www-form-urlencoded`
+
+**:link:http.GetAsync**(url: `:link:string`, callback: `:link:function`)
+
+Sends a GET request to the URL asynchronous.  
+The specified callback function will be called with the content once the request finishes.
+
+**:link:http.PostAsync**(url: `:link:string`, params: `:link:string`, callback: `:link:function`)
+
+Sends a POST request to the URL asynchronous.  
+The specified callback function will be called with the content once the request finishes.
+
+
+## **:link:ragebot**
+
+// TODO: how long? till called with nil?
+
+**:link:ragebot.OverrideMinDamage**(entityindex: `:link:number`, damage: `:link:number`)
+
+Overrides the min damage for the current tick.
+
+**:link:ragebot.OverrideHitchance**(entityindex: `:link:number`, hitchance: `:link:number`)
+
+Overrides the hitchance for the current tick.
+
+**:link:ragebot.ForceSafety**(entityindex: `:link:number`)
+
+Forces safepoint for the current tick.
+
+**:link:ragebot.SetTargetPriority**(entityindex: `:link:number`, priority: `:link:number`)
+
+Overrides the priority for the current tick.  
+`priority` can be any number, higher value = higher priority.
+
+**:link:ragebot.SetHitboxPriority**(entityindex: `:link:number`, hitbox: `:link:number`, priority: `:link:mnumber`)
+
+Overrides the priority of the hitbox for the current tick.  
+`priority` can be any number, higher value = higher priority.
+
+**:link:ragebot.ForceHitboxSafety**(entityindex: `:link:number`, hitbox: `:link:number`)
+
+Forces safepoint for the hitbox for the current tick.
+
+**:link:ragebot.EnableHitbox**(entityindex: `:link:number`, hitbox: `:link:number`, state: `:link:boolean`)
+
+Enables/disables hitbox for the current tick.
+
+**:link:ragebot.EnableMultipoints**(entityindex: `:link:number`, hitbox: `:link:number`, state: `:link:boolean`)
+
+Enables/disables multipoints of the hitbox for the current tick.
+
+**:link:ragebot.IgnoreTarget**(entityindex: `:link:number`)
+
+Ignores the target for the current tick.
+
+
+## **:link:utils**
+
+**:link:utils.CreateInterface**(module_name: `:link:string`, interface_name: `:link:string`)
+
+???
+
+// TODO
+
+**:link:utils.PatternScan**(module_name: `:link:string`, pattern: `:link:string`)
+
+Scans the module for the pattern.
+
+**:link:utils.RandomFloat**(min: `:link:number`, max: `:link:number`): `:link:number`
+
+Returns a random float between min and max.
+
+**:link:utils.RandomInt**(min: `:link:number`, max: `:link:number`): `:link:number`
+
+Returns a random int between min and max.
+
+**:link:utils.RandomSeed**(seed: `:link:number`)
+
+Seeds the pseudo random number generator.
+
+**:link:utils.RegisterConVar**(name: `:link:string`, value: `:link:string`, flags: `:link:number`, description: `:link:string`, callback: `:link:function`): `:link:ConVar`
+
+Registers a console variable.
+
+[Available flags](https://gist.github.com/es3n1n/fe2051a24ffef32a8219823e7ef69b05#file-e_cvar_flags-lua-L3)
+
+The callback is called everytime the convar's value is changed with three arguments:
+
+- convar: `:link:Convar`
+- old: `:link:string`
+- new: `:link:strin`
+
+**:link:utils.RegisterConCommand**(name: `:link:string`, flags: `:link:number`, description: `:link:string`, callback: `:link:function`): `:link:ConVar`
+
+Registers a console command.
+
+[Available flags](https://gist.github.com/es3n1n/fe2051a24ffef32a8219823e7ef69b05#file-e_cvar_flags-lua-L3)
+
+The callback is called everytime the command is run with one argument which is the convar class.
+
+**:link:utils.UnixTime**(): `:link:number`
