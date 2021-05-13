@@ -57,7 +57,9 @@ Returns the entity index of this entity.
 
 **:link:C_BaseEntity.SetModelIndex**(self, modelindex: `:link:number`)
 
-Returns the netvar prop of this entity.
+???
+
+// TODO
 
 
 ## **:link:C_BaseCombatWeapon**
