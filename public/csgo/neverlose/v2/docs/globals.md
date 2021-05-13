@@ -741,9 +741,9 @@ Registers a console variable.
 
 The callback is called everytime the convar's value is changed with three arguments:
 
-- convar: `:link:Convar`
+- convar: `:link:ConVar`
 - old: `:link:string`
-- new: `:link:strin`
+- new: `:link:string`
 
 **:link:utils.RegisterConCommand**(name: `:link:string`, flags: `:link:number`, description: `:link:string`, callback: `:link:function`): `:link:ConVar`
 
