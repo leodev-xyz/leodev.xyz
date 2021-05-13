@@ -283,3 +283,54 @@ Returns if this material has an error/is broken.
 **:link:IMaterial.SetMaterialVarFlag**(self, flag: `:link:number`, value: `:link:boolean`)
 
 Sets this material's flag.
+
+
+## **:link:INetChannelInfo**
+
+Flow types:
+
+|  Value  |  Outgoing  |  Incoming  |
+| ------- | ---------- | ---------- |
+|    0    |     √      |     x      |
+|    1    |     x      |     √      |
+|    2    |     √      |     √      |
+
+**:link:INetChannelInfo.GetName**(self): `:link:string`
+
+Returns the name of this channel.
+
+**:link:INetChannelInfo.GetAddress**(self): `:link:string`
+
+Returns the ip address of this channel.
+
+**:link:INetChannelInfo.IsPlayback**(self): `:link:boolean`
+
+Returns if this is a playback channel.
+
+**:link:INetChannelInfo.GetLatency**(self, flow: `:link:number`): `:link:number`
+
+Returns latency (real time, more accurate; fluctuates a lot)
+
+**:link:INetChannelInfo.GetAvgLatency**(self, flow: `:link:number`): `:link:number`
+
+Returns average latency (delayed, takes a while to adjust to new ping)
+
+**:link:INetChannelInfo.GetAvgLoss**(self, flow: `:link:number`): `:link:number`
+
+Returns average packet loss percetage between 0 and 1.
+
+**:link:INetChannelInfo.GetAvgChoke**(self, flow: `:link:number`): `:link:number`
+
+Returns average packet choke percentage between 0 and 1.
+
+**:link:INetChannelInfo.GetAvgData**(self, flow: `:link:number`): `:link:number`
+
+Returns average data transferred in bytes/second.
+
+**:link:INetChannelInfo.GetAvgPackets**(self, flow: `:link:number`): `:link:number`
+
+Returns average packets transferred in packets/second.
+
+**:link:INetChannelInfo.GetTotalData**(self, flow: `:link:number`): `:link:number`
+
+Returns total data sent in the specified flow.
