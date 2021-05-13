@@ -16,6 +16,9 @@ entity.GetClassId(entity)
 entity:GetClassId()
 ```
 
+> **Note**:
+> This documentation contains information/snippets from [the official documentation](https://github.com/neverlosecc/api-documentation).
+
 
 ## Visual Studio Snippets
 

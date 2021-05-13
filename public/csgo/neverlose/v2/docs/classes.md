@@ -235,3 +235,49 @@ Sets the console variable to a float.
 **:link:ConVar.SetColor**(self, value: `:link:Color`)
 
 Sets the console variable to a color.
+
+
+## **:link:IGameEvent**
+
+**:link:IGameEvent.GetName**(self, value: `:link:string`): `:link:string`
+
+Returns the name of the event.
+
+**:link:IGameEvent.GetBool**(self, key: `:link:string`, default: `link:boolean`): `:link:boolean`
+
+Returns the key value as boolean, falls back to the specified default value.
+
+**:link:IGameEvent.GetInt**(self, key: `:link:string`, default: `link:number`): `:link:number`
+
+Returns the key value as integer, falls back to the specified default value.
+
+**:link:IGameEvent.GetFloat**(self, key: `:link:string`, default: `link:number`): `:link:number`
+
+Returns the key value as float, falls back to the specified default value.
+
+**:link:IGameEvent.GetString**(self, key: `:link:string`, default: `link:string`): `:link:string`
+
+Returns the key value as string, falls back to the specified default value.
+
+
+## **:link:IMaterial**
+
+**:link:IMaterial.ColorModulate**(self, r: `:link:number`, g: `:link:number`, b: `:link:number`)
+
+Modulates this material's colors. rgb must be between 0 and 1.
+
+**:link:IMaterial.AlphaModulate**(self, a: `:link:number`)
+
+Modulates this material's alpha. a must be bertween 0 and 1.
+
+**:link:IMaterial.GetName**(self): `:link:string`
+
+Returns this material's name.
+
+**:link:IMaterial.IsErrorMaterial**(self): `:link:boolean`
+
+Returns if this material has an error/is broken.
+
+**:link:IMaterial.SetMaterialVarFlag**(self, flag: `:link:number`, value: `:link:boolean`)
+
+Sets this material's flag.
