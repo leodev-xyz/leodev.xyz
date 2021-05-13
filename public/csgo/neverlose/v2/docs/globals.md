@@ -394,3 +394,100 @@ Valid types are (case sensitive):
 
 Undos an override by `:link:g_MatSystem.OverrideMaterial`.
 
+
+## **:link:g_Render**
+
+**:link:g_Render.Line**(self, start: `:link:Vector2`, end: `:link:Vector2`, color: `:link:Color`)
+
+Renders a line.
+
+**:link:g_Render.PolyLine**(self, color: `:link:Color`, ...: `:link:Vector2`)
+
+Renders a line between each specified position.
+
+**:link:g_Render.PolyFilled**(self, color: `:link:Color`, ...: `:link:Vector2`)
+
+Fills the space between each specified position with the specified color.
+
+**:link:g_Render.Box**(self, start: `:link:Vector2`, end: `:link:Vector2`, color: `:link:Color`)
+
+Renders the outline of a box.
+
+**:link:g_Render.BoxFilled**(self, start: `:link:Vector2`, end: `:link:Vector2`, color: `:link:Color`)
+
+Renders a filled box.
+
+**:link:g_Render.Circle**(self, position: `:link:Vector2`, radius: `:link:number`, segments: `:link:number`, color: `:link:Color`, width: `:link:number`?)
+
+Renders the outline of a circle.
+
+**:link:g_Render.CircleFilled**(self, position: `:link:Vector2`, radius: `:link:number`, segments: `:link:number`, color: `:link:Color`)
+
+Renders a filled circle.
+
+**:link:g_Render.CirclePart**(self, position: `:link:Vector2`, radius: `:link:number`, segments: `:link:number`, color: `:link:Color`, start: `:link:number`, end: `:link:number`)
+
+Renders a partial circle only between start and end (both are radians).
+
+**:link:g_Render.Text**(self, text: `:link:string`, position: `:link:Vector2`, color: `:link:Color`, size: `:link:number`, font: `:link:Font`?, outline: `:link:boolean`?)
+
+Renders a text.
+
+**:link:g_Render.WeaponIcon**(self, weapon_index: `:link:number`, position: `:link:Vector2`, color: `:link:Color`, size: `:link:number`, outline: `:link:boolean`?)
+
+Renders the appropiate icon for the weapon.
+
+**:link:g_Render.CalcTextSize**(self, text: `:link:string`, size: `:link:number`, font: `:link:Font`?): `:link:Vector2`
+
+Returns the space the text would take in.
+
+**:link:g_Render.CalcWeaponIconSize**(self, weapon_index: `:link:number`, size: `:link:number`): `:link:Vector2`
+
+Returns the space the weapon icon would take in.
+
+**:link:g_Render.InitFont**(self, name: `:link:string`, size: `:link:number`): `:link:Font`
+
+Initializes and returns a font.
+
+**:link:g_Render.ScreenPosition**(self, vector: `:link:Vector3`): `:link:Vector2`
+
+Returns the positions location onscreen location.
+
+**:link:g_Render.Circle3D**(self, position: `:link:Vector3`, segments: `:link:number`, radius: `:link:number`, color: `:link:Color`)
+
+Renders a 3d circle.
+
+**:link:g_Render.Circle3DFilled**(self, position: `:link:Vector3`, segments: `:link:number`, radius: `:link:number`, color: `:link:Color`)
+
+Renders a filled 3d circle.
+
+**:link:g_Render.GradientBoxFilled**(self, start: `:link:Vector3`, end: `:link:Vector3`, topleft: `:link:Color`, topright: `:link:Color`, bottomleft: `:link:Color`, bottomright: `:link:Color`)
+
+Renders a filled gradient box.
+
+**:link:g_Render.LoadImage**(self, image: `:link:string`, size: `:link:Vector2`): `:link:Image`
+
+Loads an image from a string.
+
+**:link:g_Render.LoadImageFromFile**(self, path: `:link:string`, size: `:link:Vector2`): `:link:Image`
+
+Loads an image from a path.
+
+**:link:g_Render.Image**(self, image: `:link:Image`, position: `:link:Vector2`, size: `:link:Vector2`, color: `:link:Color`?)
+
+Displays an image.
+
+**:link:g_Render.GetMenuPos**(self): `:link:Vector2`
+
+Returns position of the menu.
+
+**:link:g_Render.GetMenuSize**(self): `:link:Vector2`
+
+Returns menu size.
+
+
+## **:link:g_Panorama**
+
+**:link:g_Panorama.Exec**(self, code: `:link:string`, panel: `:link:string`?): `:link:string`
+
+Executes panorama code and returns the result.
