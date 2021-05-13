@@ -4,7 +4,7 @@
 Use `:link:cheat.RegisterCallback` for registering callbacks.
 
 
-## `:link:Callbacks`
+## **:link:Callbacks**
 
 **:link:draw**()
 
