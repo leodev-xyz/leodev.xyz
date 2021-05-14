@@ -472,4 +472,6 @@ const generate_blog = (path) => {
         "csgo/neverlose/v2/docs/classes.md":    "csgo/neverlose/v2/docs/classes.html",
         "csgo/neverlose/v2/docs/globals.md":    "csgo/neverlose/v2/docs/globals.html"
     }, builtin_doclinks.lua)
+    generate_snippets("csgo/neverlose/v2/docs/globals.md", "csgo/neverlose/v2/snippets.lua.json", "lua", ["lua"]);
+    generate_snippets("csgo/neverlose/v2/docs/globals.md", "csgo/neverlose/v2/snippets.moon.json", "moon", ["moonscript", "yuescript"]);
 })();
