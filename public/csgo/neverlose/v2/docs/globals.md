@@ -114,7 +114,7 @@ Returns the app id of the game.
 
 Returns the build number of the engine.
 
-**:link:g_EngineClient.GetGameDirectory**(self): `.link:string`
+**:link:g_EngineClient.GetGameDirectory**(self): `:link:string`
 
 Returns the path of the game directory.
 
@@ -150,7 +150,7 @@ Returns INetChannelInfo.
 
 Returns the player index from their userid.
 
-**:link:g_EngineClient.GetPlayerInfo**(self, playerindex: `:link:number`): `:link:player_info_t`
+**:link:g_EngineClient.GetPlayerInfo**(self, playerindex: `:link:number`): `:link:PlayerInfo`
 
 Returns player information from player index.
 
@@ -249,7 +249,7 @@ Takes a screenshot and saves it in the specified file.
 
 ## **:link:g_EngineTrace**
 
-**:link:g_EngineTrace.TraceRay**(start: `:link:Vector3`, end: `:link:Vector3`, skip: `:link:C_BaseEntity`, mask: `:link:number`): `:link:Trace`
+**:link:g_EngineTrace.TraceRay**(start: `:link:Vector`, end: `:link:Vector`, skip: `:link:C_BaseEntity`, mask: `:link:number`): `:link:Trace`
 
 Traces a ray from start to end while skipping the specified entity.
 
@@ -449,19 +449,19 @@ Returns the space the weapon icon would take in.
 
 Initializes and returns a font.
 
-**:link:g_Render.ScreenPosition**(self, vector: `:link:Vector3`): `:link:Vector2`
+**:link:g_Render.ScreenPosition**(self, vector: `:link:Vector`): `:link:Vector2`
 
 Returns the positions location onscreen location.
 
-**:link:g_Render.Circle3D**(self, position: `:link:Vector3`, segments: `:link:number`, radius: `:link:number`, color: `:link:Color`)
+**:link:g_Render.Circle3D**(self, position: `:link:Vector`, segments: `:link:number`, radius: `:link:number`, color: `:link:Color`)
 
 Renders a 3d circle.
 
-**:link:g_Render.Circle3DFilled**(self, position: `:link:Vector3`, segments: `:link:number`, radius: `:link:number`, color: `:link:Color`)
+**:link:g_Render.Circle3DFilled**(self, position: `:link:Vector`, segments: `:link:number`, radius: `:link:number`, color: `:link:Color`)
 
 Renders a filled 3d circle.
 
-**:link:g_Render.GradientBoxFilled**(self, start: `:link:Vector3`, end: `:link:Vector3`, topleft: `:link:Color`, topright: `:link:Color`, bottomleft: `:link:Color`, bottomright: `:link:Color`)
+**:link:g_Render.GradientBoxFilled**(self, start: `:link:Vector`, end: `:link:Vector`, topleft: `:link:Color`, topright: `:link:Color`, bottomleft: `:link:Color`, bottomright: `:link:Color`)
 
 Renders a filled gradient box.
 
