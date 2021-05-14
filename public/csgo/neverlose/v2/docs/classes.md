@@ -853,7 +853,7 @@ Creeates a new beaminfo instance.
 
 ## **:link:firebullet_t**
 
-|  Name    |  Type             |  Description   |
-| -------- | ----------------- | -------------- |
-|  damage  |  `:link:number`   |  damage dealt  |
-|  trace   |  `:link:trace_t`  |  trace         |
+|  Name    |  Type            |  Description   |
+| -------- | ---------------- | -------------- |
+|  damage  |  `:link:number`  |  damage dealt  |
+|  trace   |  `:link:Trace`   |  trace         |
