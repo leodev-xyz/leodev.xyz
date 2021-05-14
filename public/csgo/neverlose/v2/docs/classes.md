@@ -99,7 +99,7 @@ Returns if this weapon is a sniper.
 
 Returns if this weapon is a gun.
 
-**:link:C_BaseCombatWeapon.IsRealoding**(self): `:link:boolean`
+**:link:C_BaseCombatWeapon.IsReloading**(self): `:link:boolean`
 
 Returns if this weapon is being reloaded.
 
