@@ -278,11 +278,11 @@ local weapon_handle = me:GetProp("DT_BaseCombatCharacter", "m_hActiveWeapon")
 local weap = g_EntityList:GetClientEntityFromHandle(weapon_handle)
 ```
 
-**:link:g_EntityList.GetPlayerResource**(self): `:link:CSPlayerResource`
+**:link:g_EntityList.GetPlayerResource**(self): `:link:C_BaseEntity`
 
 Returns the player resource class.
 
-**:link:g_EntityList.GetGameRules**(self): `:link:CSGameRules`
+**:link:g_EntityList.GetGameRules**(self): `:link:C_BaseEntity`
 
 Returns the game rules class.
 
