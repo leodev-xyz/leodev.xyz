@@ -460,10 +460,16 @@ const generate_blog = (path) => {
     }, builtin_doclinks.lua)
     generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.lua.json", "lua", ["lua"]);
     generate_snippets("csgo/aimware/v5/docs/globals.md", "csgo/aimware/v5/snippets.moon.json", "moon", ["moonscript", "yuescript"]);
-    await generate_scripts("csgo/aimware/v5/scripts");
+    // await generate_scripts("csgo/aimware/v5/scripts");
 
 
     // neverlose
     //   V2
     fs.ensureDirSync("dist/csgo/neverlose/v2/docs");
+    generate_docs({
+        "csgo/neverlose/v2/docs/index.md":      "csgo/neverlose/v2/docs/index.html",
+        "csgo/neverlose/v2/docs/callbacks.md":  "csgo/neverlose/v2/docs/callbacks.html",
+        "csgo/neverlose/v2/docs/classes.md":    "csgo/neverlose/v2/docs/classes.html",
+        "csgo/neverlose/v2/docs/globals.md":    "csgo/neverlose/v2/docs/globals.html"
+    }, builtin_doclinks.lua)
 })();
