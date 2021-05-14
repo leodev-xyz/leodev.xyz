@@ -470,7 +470,6 @@ const generate_blog = (path) => {
         "csgo/neverlose/v2/docs/index.md":      "csgo/neverlose/v2/docs/index.html",
         "csgo/neverlose/v2/docs/callbacks.md":  "csgo/neverlose/v2/docs/callbacks.html",
         "csgo/neverlose/v2/docs/classes.md":    "csgo/neverlose/v2/docs/classes.html",
-        "csgo/neverlose/v2/docs/globals.md":    "csgo/neverlose/v2/docs/globals.html",
-        "csgo/neverlose/v2/docs/ressources.md": "csgo/neverlose/v2/docs/ressources.html"
+        "csgo/neverlose/v2/docs/globals.md":    "csgo/neverlose/v2/docs/globals.html"
     }, builtin_doclinks.lua)
 })();

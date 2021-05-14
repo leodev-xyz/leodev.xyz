@@ -6,7 +6,6 @@ This documentation is for Neverlose V2 because their docs are incomplete, poorly
 - [Callbacks](callbacks.html)
 - [Classes](classes.html)
 - [Globals](globals.html)
-- [Ressources](ressources.html)
 
 If a function's first argument is `self`, it's a "method" and can be called using `:`.  
 If a function's name starts with `__`, it's a [meta method](http://lua-users.org/wiki/MetamethodsTutorial)
