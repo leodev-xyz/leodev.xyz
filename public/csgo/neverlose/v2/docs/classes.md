@@ -245,19 +245,19 @@ Sets the console variable to a color.
 
 Returns the name of the event.
 
-**:link:IGameEvent.GetBool**(self, key: `:link:string`, default: `link:boolean`): `:link:boolean`
+**:link:IGameEvent.GetBool**(self, key: `:link:string`, default: `:link:boolean`): `:link:boolean`
 
 Returns the key value as boolean, falls back to the specified default value.
 
-**:link:IGameEvent.GetInt**(self, key: `:link:string`, default: `link:number`): `:link:number`
+**:link:IGameEvent.GetInt**(self, key: `:link:string`, default: `:link:number`): `:link:number`
 
 Returns the key value as integer, falls back to the specified default value.
 
-**:link:IGameEvent.GetFloat**(self, key: `:link:string`, default: `link:number`): `:link:number`
+**:link:IGameEvent.GetFloat**(self, key: `:link:string`, default: `:link:number`): `:link:number`
 
 Returns the key value as float, falls back to the specified default value.
 
-**:link:IGameEvent.GetString**(self, key: `:link:string`, default: `link:string`): `:link:string`
+**:link:IGameEvent.GetString**(self, key: `:link:string`, default: `:link:string`): `:link:string`
 
 Returns the key value as string, falls back to the specified default value.
 
