@@ -8,12 +8,16 @@ This documentation is for Neverlose V2 because their docs are incomplete, poorly
 - [Globals](globals.html)
 - [Ressources](ressources.html)
 
-If a function's first argument is `self`, it's a "method" and can be called using `:`.
+If a function's first argument is `self`, it's a "method" and can be called using `:`.  
+If a function's name starts with `__`, it's a [meta method](http://lua-users.org/wiki/MetamethodsTutorial)
 
 ```lua
 entity.GetClassId(entity)
 -- equivalent to
 entity:GetClassId()
+
+-- Vector.__add(self, vector)
+Vector.new(1, 1, 1) + Vector.new(2, 2, 2)
 ```
 
 > **Note**:

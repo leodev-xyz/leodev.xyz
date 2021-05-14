@@ -7,7 +7,7 @@
 > **Note**: Some of these are documented in the NL docs, but they don't make much sense.
 
 |  Name                         |  Type             |  Description                                         |
-| ----------------------------- | ----------------- | ---------------------------------------------------- |
+| ----------------------------- | ----------------- | ---------------------------------------------------- |
 |  realtime                     |  `:link:number`   |  Time since game start                               |
 |  framecount                   |  `:link:number`   |  Frame counter                                       |
 |  absoluteframetime            |  `:link:number`   |  ?                                                   |
@@ -31,7 +31,7 @@
 
 |  Name                     |  Tyoe            |  Description                              |
 | ------------------------- | ---------------- | ----------------------------------------- |
-|  m_last_outgoing_command  |  `:link:number`  |  Last outgoing usercommand                |
+|  m_last_outgoing_command  |  `:link:number`  |  Last outgoing usercommand                |
 |  m_choked_commands        |  `:link:number`  |  Amount of chocked usercommands in a row  |
 |  m_last_command_ack       |  `:link:number`  |  Last acknowledged usercommand            |
 |  m_command_ack            |  `:link:number`  |  ?                                        |
@@ -754,3 +754,132 @@ Registers a console command.
 The callback is called everytime the command is run with one argument which is the convar class.
 
 **:link:utils.UnixTime**(): `:link:number`
+
+Returns unix time of the server.
+
+
+## **:link:esp**
+
+**:link:esp.CustomText**(name: `:link:string`, classname: `:link:string`, preview: `:link:string`, callback: `:link:function`)
+
+Adds a text to the esp that can be customized.
+
+Possible class names:
+
+- enemies
+- mates
+- local
+- weapon
+- grenade
+
+The callback is called with one argument (`:link:C_BaseEntity`) every frame for each entity.
+The callback should return the string that is displayed next to the entity.
+
+```lua
+esp.CustomText("Name", "enemies", "neverlose.cc", function(entity)
+  return entity:GetPlayer():GetName()
+end)
+```
+
+**:link:esp.CustomBar**(name: `:link:string`, classname: `:link:string`, callback: `:link:function`)
+
+Adds a bar to the esp whose value can be customized.
+
+The callback is called with one argument (`:link:C_BaseEntity`) every frame for each entity.
+The callback should return a value between 0 and 100 that is used to fill the bar appropiately.
+ 
+```lua
+esp.CustomBar("Health", "enemies", function(entity)
+  return entity:GetProp("m_iHealth")
+end)
+```
+
+
+## **:link:menu**
+
+**:link:menu.Switch**(group: `:link:string`, name: `:link:string`, default: `:link:boolean`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a switch.  
+Use `:link:CheatVar.GetBool` for getting its state.
+
+**:link:menu.SwitchColor**(group: `:link:string`, name: `:link:string`, default_switch: `:link:boolean`, default_color: `:link:Color`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creatse a switch with a colorpicker.  
+Use `:link:CheatVar.GetBool` for checking its switch state and `:link:CheatVar.GetColor` for getting its color.
+
+**:link:menu.SliderInt**(group: `:link:string`, name: `:link:string`, default: `:link:number`, min: `:link:number`, max: `:link:number`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a slider.  
+Use `:link:CheatVar.GetInt` for getting its value.
+
+**:link:menu.SliderIntColor**(group: `:link:string`, name: `:link:string`, default_value: `:link:number`, min: `:link:number`, max: `:link:number`, default_color: `:link:Color`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a slider with a colorpicker.  
+Use `:link:CheatVar.GetInt` for gettings its slider avalue and `:link:CheatVar.GetColor` for getting its color.
+
+**:link:menu.SliderFloat**(group: `:link:string`, name: `:link:string`, default: `:link:number`, min: `:link:number`, max: `:link:number`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a slider.  
+Use `:link:CheatVar.GetFloat` for getting its value.
+
+**:link:menu.SliderFloatColor**(group: `:link:string`, name: `:link:string`, default_value: `:link:number`, min: `:link:number`, max: `:link:number`, default_color: `:link:Color`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a slider with a colorpicker.  
+Use `:link:CheatVar.GetFloat` for gettings its slider avalue and `:link:CheatVar.GetColor` for getting its color.
+
+**:link:menu.Combo**(group: `:link:string`, name: `:link:string`, items: Array[`:link:string`], default: `:link:number`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a combobox.  
+Use `:link:CheatVar.GetInt` for getting the selected item (index).
+
+**:link:menu.ComboColor**(group: `:link:string`, name: `:link:string`, items: Array[`:link:string`], default_value: `:link:number`, default_color: `:link:Color`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a combobox with a colorpicker.  
+Use `:link:CheatVar.GetInt` for getting the selected item (index) and `:link:CheatVar.GetColor` for getting its color.
+
+**:link:menu.MultiCombo**(group: `:link:string`, name: `:link:string`, items: Array[`:link:string`], default: `:link:number`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a multi combobox.  
+Use `:link:CheatVar.GetBool` for checking if an index is selected.
+
+**:link:menu.TextBox**(group: `:link:string`, name: `:link:string`, length: `:link:number`, default: `:link:string`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a textbox.  
+Use `:link:CheatVar.GetString` for getting its value.
+
+**:link:menu.Text**(group: `:link:string`, label: `:link:string`)
+
+Creates a text.
+
+**:link:menu.Button**(group: `:link:string`, name: `:link:string`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a button.  
+Use `:link:CheatVar.RegisterCallback` for registering a callback.
+
+**:link:menu.ColorEdit**(group: `:link:string`, name: `:link:string`, default: `:link:Color`, tooltip: `:link:string`?): `:link:CheatVar`
+
+Creates a colorpicker.  
+Use `:link:CheatVar.GetColor` for getting its color.
+
+**:link:menu.GetRageHitboxState**(hitbox: `:link:number`): `:link:boolean`
+
+Returns if the hitbox is enabled in the ragebot.
+
+**:link:menu.GetRageMultipointState**(hitbox: `:link:number`): `:link:boolean`
+
+Returns if multipoints of the hitbox are enabled in the ragebot.
+
+**:link:menu.GetLegitHitboxState**(hitbox: `:link:number`): `:link:number`
+
+Return value:
+
+|  Value  |  Meaning          |
+| ------- | ----------------- |
+|    0    |  disabled         |
+|    1    |  low priority     |
+|    2    |  medium priority  |
+|    3    |  high priority    |
+
+**:link:menu.DestroyItem**(element: `:link:CheatVar`)
+
+Destroys the element.
