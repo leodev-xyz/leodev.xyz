@@ -551,7 +551,7 @@ assert #QAngle.new(1, 1, 1) == 1.7320508076
 ```
 
 
-## **:link:ragebot_shot**
+## **:link:_G:ragebot_shot**
 
 |  Name       |  Type            |  Description                             |
 | ----------- | ---------------- | ---------------------------------------- |
@@ -580,7 +580,7 @@ Fields of a rectangle instance:
 Creates a new rectangle instance.
 
 
-## **:link:RegisteredShot**
+## **:link:_G:RegisteredShot**
 
 |  Name          |  Type            |  Description                            |
 | -------------- | ---------------- | --------------------------------------- |
