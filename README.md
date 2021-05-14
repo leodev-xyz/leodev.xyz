@@ -15,8 +15,6 @@ Node dependencies: `npm i`
 
 For compiling `.moon` files, you need the [MoonScript](https://moonscript.org/#installation) compiler.
 
-For compiling `.yue` files, you need the [YueScript](http://yuescript.org/doc/#installation) compiler.
-
 
 ### Generating website
 

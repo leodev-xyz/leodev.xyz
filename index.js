@@ -13,8 +13,15 @@ const exec = require('child_process').exec;
 const tmpdir = require("os").tmpdir;
 
 
-const builtin_doclinks = require("./doclinks.js");
-const Redirector = require("./redirects.js");
+const builtin_doclinks = require("./libs/doclinks.js");
+const Redirector = require("./libs/redirects.js");
+const yuescript = require("./libs/yuescript.js");;
+
+const yue_to_lua = async function(source) {
+    value = yuescript.tolua(source, true, true, true)
+    if(value[0]) return value[0];
+    throw new Error(value[1]);
+}
 
 
 let doclinks = {};
@@ -216,19 +223,23 @@ const prepare_scripts = async (where, scriptname, script, settings) => {
         source = (await minify(source, {ecma: 5, format: {ascii_only: true}})).code;
         scripts.push([script.substr(0, script.length - 3) + ".min.js", source]);
     }
-    if(path.extname(script) === ".moon" || path.extname(script) === ".yue") {
-        const isMoon = path.extname(script) === ".moon";
+    if(path.extname(script) === ".yue") {
+        scripts.push([script, source]);
+        script = script.substr(0, script.length - 4) + ".lua";
+        source = await yue_to_lua(source);
+    }
+    if(path.extname(script) === ".moon") {
         scripts.push([script, source]);
         const tmp = tmpdir();
         fs.writeFileSync(path.join(tmp, script), source);
         try {
             await new Promise((resolve, reject) => {
-                exec((isMoon ? "moonc" : "yue") + " " + path.join(tmp, script), (err, stdout, stderr) => {
+                exec("moonc " + path.join(tmp, script), (err, stdout, stderr) => {
                     if(err) {
-                        if(err.code === 127 && err.message.indexOf(`${(isMoon ? "moonc" : "yue")}: command not found`) >= 0) {
-                            console.error(`Please install ${(isMoon ? "moonscript" : "yuescript")} for compiling ${script}`);
+                        if(err.code === 127 && err.message.indexOf("moonc: command not found") >= 0) {
+                            console.error(`Please install a moonscript compiler for compiling ${script}`);
                         } else {
-                            console.error(`Error while compiling ${(isMoon ? "moon" : "yue")}script file: ${stderr ? stderr : stdout}`);
+                            console.error(`Error while compiling moonscript file: ${stderr ? stderr : stdout}`);
                         }
                         return reject(err);
                     }
@@ -238,7 +249,7 @@ const prepare_scripts = async (where, scriptname, script, settings) => {
         } catch(e) {
             return scripts;
         }
-        script = script.substr(0, script.length - path.extname(script).length) + ".lua"
+        script = script.substr(0, script.length - 5) + ".lua"
         source = fs.readFileSync(path.join(tmp, script)).toString();
     }
     if(path.extname(script) === ".lua") {
@@ -392,7 +403,7 @@ const generate_blog = (path) => {
     }
 }
 
-(async function() {
+setTimeout(async function() {
     fs.copySync("public/static", "dist/static");
 
     const redirects = new Redirector();
@@ -474,4 +485,4 @@ const generate_blog = (path) => {
     }, builtin_doclinks.lua)
     generate_snippets("csgo/neverlose/v2/docs/globals.md", "csgo/neverlose/v2/snippets.lua.json", "lua", ["lua"]);
     generate_snippets("csgo/neverlose/v2/docs/globals.md", "csgo/neverlose/v2/snippets.moon.json", "moon", ["moonscript", "yuescript"]);
-})();
+}, 100);
