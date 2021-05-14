@@ -581,7 +581,7 @@ Fields of a rectangle instance:
 Creates a new rectangle instance.
 
 
-## **:link:_G:RegisteredShot**
+## **:link:_G:registered_shot**
 
 |  Name          |  Type            |  Description                            |
 | -------------- | ---------------- | --------------------------------------- |
