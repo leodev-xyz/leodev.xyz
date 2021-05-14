@@ -1,10 +1,10 @@
 
-# My website
+# Generator of leodev.xyz
 
 [![Discord](https://discord.com/api/guilds/756989147163656273/widget.png)](https://discord.gg/FCnK6xp)
 
 
-The source code of my website: https://leodeveloper.pages.dev
+The source code of my website: https://leodev.xyz
 
 
 ## Building
