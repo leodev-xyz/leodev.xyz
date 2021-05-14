@@ -282,7 +282,7 @@ Returns if this material has an error/is broken.
 
 **:link:IMaterial.SetMaterialVarFlag**(self, flag: `:link:number`, value: `:link:boolean`)
 
-Sets this material's flag.
+Sets a [material flag](https://developer.valvesoftware.com/wiki/Material_Flags) for this material.
 
 
 ## **:link:INetChannelInfo**
