@@ -374,30 +374,31 @@ Returns if the bind is active.
 
 ## **:link:CheatVar**
 
-**:link:CheatVar.GetBool**(self): `:link:boolean`
+**:link:CheatVar.GetBool**(self, element_index: `:link:number`?): `:link:boolean`
 
 Returns this cheat variable's value as a boolean.  
-For `:link:menu.Switch`, `:link:menu.SwitchColor`.
+For `:link:menu.Switch`, `:link:menu.SwitchColor` and `:link:menu.MultiCombo`.  
+`element_index` is optional and only used for `:link:menu.MultiCombo`.
 
 **:link:CheatVar.GetFloat**(self): `:link:number`
 
 Returns this cheat variable's value as a float.  
-For `:link:menu.SliderFloat`.
+For `:link:menu.SliderFloat` and `:link:menu.SliderFloatColor`.
 
 **:link:CheatVar.GetInt**(self): `:link:number`
 
 Returns this cheat variable's value as an integer.  
-For `:link:menu.SliderInt`.
+For `:link:menu.SliderInt`, `:link:SliderIntColor` and `:link:menu.Combo`.
 
 **:link:CheatVar.GetColor**(self): `:link:Color`
 
 Returns this cheat variable's value as a color.  
-For `:link:menu.ColorEdit`.
+For `:link:menu.SwitchColor`, `:link:menu.SliderIntColor`, `:link:menu.SliderFloatColor`, `:link:menu.ComboColor` and `:link:menu.ColorEdit`.
 
 **:link:CheatVar.GetString**(self): `:link:string`
 
 Returns this cheat variable's value as a string  
-For `:link:menu.String`.
+For `:link:menu.TextBox`.
 
 **:link:CheatVar.SetBool**(self, element_index: `:link:number`?, value: `:link:boolean`)
 
