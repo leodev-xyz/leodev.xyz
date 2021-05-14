@@ -22,6 +22,10 @@ UserCommand inside cheat prediction.
 
 UserCommand before cheat prediction.
 
+**:link:events**(event: `:link:IGameEvent`)
+
+Called for every event.
+
 **:link:destroy**()
 
 Script was unloaded.
