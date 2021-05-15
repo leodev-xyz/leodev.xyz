@@ -687,7 +687,7 @@ Forces safepoint for the current tick.
 Overrides the priority for the current tick.  
 `priority` can be any number, higher value = higher priority.
 
-**:link:ragebot.SetHitboxPriority**(entityindex: `:link:number`, hitbox: `:link:number`, priority: `:link:mnumber`)
+**:link:ragebot.SetHitboxPriority**(entityindex: `:link:number`, hitbox: `:link:number`, priority: `:link:number`)
 
 Overrides the priority of the hitbox for the current tick.  
 `priority` can be any number, higher value = higher priority.
