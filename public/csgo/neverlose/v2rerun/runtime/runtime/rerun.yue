@@ -5,7 +5,7 @@ fast_push = (tbl, item) ->
 
 
 api = _G -- original api (so we dont access locals)
-env = {  -- lua default env
+env = setmetatable {  -- lua default env
     :_VERSION
     :string, :table, :os, :io, :math, :coroutine, :module -- NL has no debug
     :pcall, :xpcall
@@ -21,7 +21,8 @@ env = {  -- lua default env
     :collectgarbage, :newproxy, :gcinfo
 
     :bit, :ffi  -- NL exclusive
-}
+}, { __call: -> api }
+env._G = env
 
 -------------------------------------------------------------------------------
 -- Classes
