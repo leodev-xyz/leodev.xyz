@@ -249,7 +249,7 @@ Takes a screenshot and saves it in the specified file.
 
 ## **:link:g_EngineTrace**
 
-**:link:g_EngineTrace.TraceRay**(start: `:link:Vector`, end: `:link:Vector`, skip: `:link:C_BaseEntity`, mask: `:link:number`): `:link:Trace`
+**:link:g_EngineTrace.TraceRay**(self, start: `:link:Vector`, end: `:link:Vector`, skip: `:link:C_BaseEntity`, mask: `:link:number`): `:link:Trace`
 
 Traces a ray from start to end while skipping the specified entity.
 
