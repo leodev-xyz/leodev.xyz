@@ -374,6 +374,22 @@ Returns if the bind is active.
 
 ## **:link:CheatVar**
 
+|                                 |  `:link:CheatVar.GetBool`  |  `:link:CheatVar.GetInt`  |  `:link:CheatVar.GetFloat`  |  `:link:CheatVar.GetColor`  |  `:link:CheatVar.GetString`  |
+| ------------------------------- |:--------------------------:|:-------------------------:|:---------------------------:|:---------------------------:|:----------------------------:|
+|  `:link:menu.Switch`            |             √              |                           |                             |                             |                              |
+|  `:link:menu.SwitchColor`       |             √              |                           |                             |              √              |                              |
+|  `:link:menu.SliderInt`         |                            |             √             |                             |                             |                              |
+|  `:link:menu.SliderIntColor`    |                            |             √             |                             |              √              |                              |
+|  `:link:menu.SliderFloat`       |                            |                           |               √             |                             |                              |
+|  `:link:menu.SliderFloatColor`  |                            |                           |               √             |              √              |                              |
+|  `:link:menu.Combo`             |                            |             √             |                             |                             |                              |
+|  `:link:menu.ComboColor`        |                            |             √             |                             |              √              |                              |
+|  `:link:menu.MultiCombo`        |              √             |                           |                             |                             |                              |
+|  `:link:menu.TextBox`           |                            |                           |                             |                             |               √              |
+|  `:link:menu.Text`              |                            |                           |                             |                             |                              |
+|  `:link:menu.Button`            |                            |                           |                             |                             |                              |
+|  `:link:menu.ColorEdit`         |                            |                           |                             |              √              |                              |
+
 **:link:CheatVar.GetBool**(self, element_index: `:link:number`?): `:link:boolean`
 
 Returns this cheat variable's value as a boolean.  
