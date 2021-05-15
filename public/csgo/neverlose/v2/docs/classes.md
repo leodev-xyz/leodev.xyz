@@ -190,7 +190,7 @@ This can only be called during a `:link:draw` callback.
 Returns the network state of this entity.
 
 |  Value  |  Meaning                                           |
-| ------- | -------------------------------------------------- |
+|:-------:| -------------------------------------------------- |
 |   -1    |  dormant and no data is available (or it expired)  |
 |    0    |  not dormant (full info)                           |
 |    1    |  dormant but cheat knows 100% where enemy is       |
@@ -290,9 +290,9 @@ Sets a [material flag](https://developer.valvesoftware.com/wiki/Material_Flags) 
 Flow types:
 
 |  Value  |  Outgoing  |  Incoming  |
-| ------- | ---------- | ---------- |
-|    0    |     √      |     x      |
-|    1    |     x      |     √      |
+|:-------:|:----------:|:----------:|
+|    0    |     √      |            |
+|    1    |            |     √      |
 |    2    |     √      |     √      |
 
 **:link:INetChannelInfo.GetName**(self): `:link:string`
@@ -354,7 +354,7 @@ Returns if the bind is active.
 ## **:link:CUserCmd**
 
 |  Name              |  Type             |  Sent to server  |  Description                                       |
-| ------------------ | ----------------- | ---------------- | -------------------------------------------------- |
+| ------------------ | ----------------- |:----------------:| -------------------------------------------------- |
 |  command_number    |  `:link:number`   |         √        |  for matching client and server commands           |
 |  tick_count        |  `:link:number`   |         √        |  tick the usercommand is for                       |
 |  viewangles        |  `:link:QAngle`   |         √        |  viewangles                                        |
@@ -463,7 +463,7 @@ Returns the item list of this combobox.
 Fields of a color instance:
 
 |  Name  |  Type            |  Description                   |
-| ------ | ---------------- | ------------------------------ |
+|:------:| ---------------- | ------------------------------ |
 |   r    |  `:link:number`  |  red ratio; between 0 and 1    |
 |   g    |  `:link:number`  |  green ratio; between 0 and 1  |
 |   b    |  `:link:number`  |  blue ratio; between 0 and 1   |
@@ -586,7 +586,7 @@ assert #QAngle.new(1, 1, 1) == 1.7320508076
 Fields of a rectangle instance:
 
 |  Name  |  Type            |  Description  |
-| ------ | ---------------- | ------------- |
+|:------:| ---------------- | ------------- |
 |   x    |  `:link:number`  |  x            |
 |   y    |  `:link:number`  |  y            |
 |   z    |  `:link:number`  |  z            |
@@ -612,7 +612,7 @@ Creates a new rectangle instance.
 Miss reasons:
 
 |  Reason  |  Meaning           |
-| -------- | ------------------ |
+|:--------:| ------------------ |
 |    0     |  hit enemy         |
 |    1     |  resolver          |
 |    2     |  spread            |
@@ -645,7 +645,7 @@ Miss reasons:
 Fields of a vector instance:
 
 |  Name  |  Type            |  Description  |
-| ------ | ---------------- | ------------- |
+|:------:| ---------------- | ------------- |
 |   x    |  `:link:number`  |  x            |
 |   y    |  `:link:number`  |  y            |
 |   z    |  `:link:number`  |  z            |
@@ -750,7 +750,7 @@ local dot = my_vec:Cross(my_vec2)
 Fields of a vector instance:
 
 |  Name  |  Type            |  Description  |
-| ------ | ---------------- | ------------- |
+|:------:| ---------------- | ------------- |
 |   x    |  `:link:number`  |  x            |
 |   y    |  `:link:number`  |  y            |
 

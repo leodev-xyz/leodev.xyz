@@ -874,7 +874,7 @@ Returns if multipoints of the hitbox are enabled in the ragebot.
 Return value:
 
 |  Value  |  Meaning          |
-| ------- | ----------------- |
+|:-------:| ----------------- |
 |    0    |  disabled         |
 |    1    |  low priority     |
 |    2    |  medium priority  |
