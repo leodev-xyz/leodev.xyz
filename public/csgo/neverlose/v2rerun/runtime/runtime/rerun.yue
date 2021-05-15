@@ -1,0 +1,808 @@
+
+fast_push = (tbl, item) ->
+    tbl.n += 1
+    tbl[tbl.n] = item
+
+
+api = _G -- original api (so we dont access locals)
+env = {  -- lua default env
+    :_VERSION
+    :string, :table, :os, :io, :math, :coroutine, :module -- NL has no debug
+    :pcall, :xpcall
+    :require, :package
+    :tostring, :tonumber, :type
+    :print, :error, :assert
+    :getfenv, :setfenv
+    :getmetatable, :setmetatable
+    :rawget, :rawset, :rawequal
+    :load, :loadfile, :loadstring, :dofile
+    :pairs, :ipairs
+    :unpack, :select, :next
+    :collectgarbage, :newproxy, :gcinfo
+
+    :bit, :ffi  -- NL exclusive
+}
+
+-------------------------------------------------------------------------------
+-- Classes
+-------------------------------------------------------------------------------
+
+-- Very essential
+-- Math stuff
+-- IMPORTANT: we can't pass our Vectors/Colors/Angles to the original runtime, because it expects userdata stuff from sol.
+
+class Field
+    new: (@name, @default = 0) =>
+
+class MathMixin
+    @fields = {}
+
+    new: (...) =>
+        -- accepts:
+        --    1. Inherited(1, 2, 3)
+        --    2. Inherited({1, 2, 3})
+        --    3. Inherited({x: 1, y: 2, z: 3})
+        args = {...}
+        if #args == 1 and "table" == type args[1] -- type 2 or 3
+            args = args[1] -- makes type 2 behave like type 1
+            if not args[1] -- type 3
+                @[field.name] = args[field.name] ~= nil and args[field.name] or field.default for field in *@@fields
+        if args[1] -- type 1 or 2
+            @[field.name] = args[i] ~= nil and args[i] or field.default for i, field in ipairs @@fields
+
+    __inherited: (cls) =>
+        for key, value in pairs @__base
+            cls.__base[key] = value if key != "__index" and key\sub(1, 2) == "__" and "function" == type value
+
+    __tostring: => @@__name .. "(" .. table.concat([tostring(@[field.name]) for field in *@@fields], ", ") .. ")"
+
+    -- mathematical operators
+    __unm: =>
+        blank = @@!
+        blank[field.name] = -@[field.name] for field in *@@fields
+        blank
+    __add: (other) =>
+        if "number" == type other -- number
+            blank = @@!
+            blank[field.name] = @[field.name] + other for field in *@@fields
+            return blank
+        assert @@__name == other.__class.__name, "classes are not compatible"
+        blank = @@!
+        blank[field.name] = @[field.name] + other[field.name] for field in *@@fields
+        blank
+    __sub: (other) =>
+        if "number" == type other -- number
+            blank = @@!
+            blank[field.name] = @[field.name] - other for field in *@@fields
+            return blank
+        assert @@__name == other.__class.__name, "classes are not compatible"
+        blank = @@!
+        blank[field.name] = @[field.name] - other[field.name] for field in *@@fields
+        blank
+    __mul: (other) =>
+        if "number" == type other -- number
+            blank = @@!
+            blank[field.name] = @[field.name] * other for field in *@@fields
+            return blank
+        assert @@__name == other.__class.__name, "classes are not compatible"
+        blank = @@!
+        blank[field.name] = @[field.name] * other[field.name] for field in *@@fields
+        blank
+    __div: (other) =>
+        if "number" == type other -- number
+            blank = @@!
+            blank[field.name] = @[field.name] / other for field in *@@fields
+            return blank
+        assert @@__name == other.__class.__name, "classes are not compatible"
+        blank = @@!
+        blank[field.name] = @[field.name] / other[field.name] for field in *@@fields
+        blank
+    __mod: (other) =>
+        if "number" == type other -- number
+            blank = @@!
+            blank[field.name] = @[field.name] % other for field in *@@fields
+            return blank
+        assert @@__name == other.__class.__name, "classes are not compatible"
+        blank = @@!
+        blank[field.name] = @[field.name] % other[field.name] for field in *@@fields
+        blank
+    __pow: (other) =>
+        if "number" == type other -- number
+            blank = @@!
+            blank[field.name] = @[field.name] ^ other for field in *@@fields
+            return blank
+        assert @@__name == other.__class.__name, "classes are not compatible"
+        blank = @@!
+        blank[field.name] = @[field.name] ^ other[field.name] for field in *@@fields
+        blank
+    __len: =>
+        sum = 0
+        sum += @[field.name] ^ 2 for field in *@@fields
+        math.sqrt sum
+
+    -- equivalence comparison operators
+    __eq: (other) =>
+        return false if @@__name != other.__class__name
+        for field in *@@fields
+            return false if @[field.name] != field.name
+        true
+    __lt: (other) =>
+        return nil if @@__name != other.__class.__name -- not compareable
+        #@ < #other
+    __le: (other) =>
+        return nil if @@__name != other.__class.__name -- not compareable
+        #@ <= #other
+
+class Color extends MathMixin
+    @fields = {
+        Field "r"
+        Field "g"
+        Field "b"
+        Field "a", 1
+    }
+
+    __call: => api.Color @r, @g, @b, @a
+
+class Vector extends MathMixin
+    @fields = {
+        Field "x"
+        Field "y"
+        Field "z"
+    }
+
+    __call: => api.Vector @x, @y, @z
+
+    length: => #@
+    length2d: => #Vector2 @x, @y
+    distance_to: (other) => #(@ - other)
+    dot: (other) =>
+        vec = @ * other
+        vec.x + vec.y + vec.z
+    cross: (other) => Vector @y * other.z - @z * other.y, @z * other.x - @x * other.z, @x * other.y - @y * other.x
+
+    angles: => api.cheat.VectorToAngle @!
+
+class Vector2 extends MathMixin
+    @fields = {
+        Field "x"
+        Field "y"
+    }
+
+    __call: => api.Vector2 @x, @y
+
+    length: => #@
+
+class QAngle extends MathMixin
+    @fields = {
+        Field "pitch"
+        Field "yaw"
+        Field "roll"
+    }
+
+    __call: => api.QAngle @pitch, @yaw, @roll
+
+    forward: => api.cheat.AnglesToForward @!
+
+-- Enum
+
+class Enum
+    new: (values) =>
+        @[key] = value for key, value in pairs values
+        @_map = {value, key for key, value in pairs values}
+    __call: (value) => @_map[value]
+
+-- Entities
+
+class Entity
+    new: (@_ent) =>
+    __call: => @_ent
+
+    get_classid: => @_ent\GetClassId!
+    get_classname: => @_ent\GetClassName!
+    
+    get_prop: (name, index) => @_ent\GetProp name, index
+    set_prop: (name, value, index) => @_ent\SetProp name, value, index
+
+    is_player: => @_ent\IsPlayer!
+    get_player: => Player @_ent
+    is_weapon: => @_ent\IsWeapon!
+    get_weapon: => Weapon @_ent
+
+    get_render_bounds: => @_ent\GetRenderBounds! -- TODO
+    get_render_origin: => Vector @_ent\GetRenderOrigin!
+    get_render_angles: => QAngle @_ent\GetRenderAngles!
+    get_entityindex: => @_ent\EntIndex!
+    set_modelindex: (modelindex) => @_ent\SetModelIndex modelindex
+ 
+class Weapon extends Entity
+    get_prop: (table, name, index) => @_ent\GetProp table, name, index
+    set_prop: (table, name, value, index) => @_ent\SetProp table, name, value, index
+
+    is_grenade: => @_ent\IsGrenade!
+    is_knife: => @_ent\IsKnife!
+    is_rifle: => @_ent\IsRifle!
+    is_pistol: => @_ent\IsPistol!
+    is_sniper: => @_ent\IsSniper!
+    is_gun: => @_ent\IsGun!
+    is_reloading: => @_ent\IsReloading!
+
+    get_inaccuracy: => @_ent\GetInaccuracy!
+    get_spread: => @_ent\GetSpread!
+    get_firerate: => @_ent\GetFireRate!
+    get_maxspeed: => @_ent\GetMaxSpeed!
+    get_maxclip: => @_ent\GetMaxClip!
+    get_weapon_damage: => @_ent\GetWeaponDamage!
+    get_weapon_range: => @_ent\GetWeaponRange!
+    get_weapon_id: => @_ent\GetWeaponId!
+
+class Player extends Entity
+    is_visible: (position) => @_ent\IsVisible position
+    is_dormant: => @_ent\IsDormant!
+    is_teammate: => @_ent\IsTeamMate! -- nice casing @neverlose
+
+    get_eyeposition: => Vector @_ent\GetEyePosition!
+    get_activeweapon: => Weapon @_ent\GetActiveWeapon!
+    get_hitboxcenter: (hitbox) =>
+        hitbox = env.enums.HITGROUP[hitbox] if "string" == type hitbox  -- player:get_hitboxcenter("HEAD")
+        @_ent\GetHitboCenter hitbox
+    get_sequenceactivity: (sec) => @_ent\GetSequenceActivity sec
+    get_networkstate: => @_ent\GetNetworkState!
+    get_espalpha: => @_ent\GetESPAlpha!
+    
+    draw_hitbox: (hitbox, color, tick) =>
+        hitbox = env.enums.HITGROUP[hitbox] if "string" == type hitbox  -- player:draw_hitbox("HEAD")
+        @_ent\DrawHitbox hitbox, color, tick
+
+-- Other classes
+
+class ConVar
+    new: (@_convar) =>
+    __call: => @_convar
+
+    get_bool: => @get_int! > 0
+    get_string: => @_convar\GetString!
+    get_int: => @_convar\GetInt!
+    get_float: => @_convar\GetFloat!
+    get_color: => @_convar\GetColor!
+
+    set_bool: (value) => @set_int value and 1 or 0
+    set_string: (value) => @_convar\SetString value
+    set_int: (value) => @_convar\SetInt value
+    set_float: (value) => @_convar\SetFloat value
+    set_color: (value) => @_convar\SetColor value
+
+class GameEvent
+    new: (@_event) =>
+    __call: => @_event
+
+    get_name: => @_event\GetName!
+    get_bool: => @_event\GetBool!
+    get_int: => @_event\GetInt!
+    get_float: => @_event\GetFloat!
+    get_string: => @_event\GetString!
+
+class Material
+    new: (@_mat) =>
+    __call: => @_mat
+
+    get_name: => @_mat\GetName!
+    is_broken: => @_mat\IsErrorMaterial!
+
+    modulate: (color) =>
+        if color.r >= 0 or color.g >= 0 or color.b >= 0
+            error "rgb all must be above or below 0" if color.r < 0 or color.g < 0 or color.b
+            @_mat\ColorModulate color.r, color.g, color.b
+        @_mat\AlphaModulate color.a if color.a >= 0
+    set_flag: (flag, value) =>
+        flag = env.enums.MATERIALFLAGS[flag] if "string" == type flag -- material:set_flag("IGNOREZ", true)
+        @_mat\SetMaterialVarFlag flag, value
+
+class NetChannelInfo
+    new: (@_info) =>
+    __call: => @_info
+
+    get_name: => @_info\GetName!
+    get_address: => @_info\GetAddress!
+    is_playback: => @_info\IsPlayback!
+
+    get_latency_live: (flow) =>
+        flow = env.enums.FLOW[flow] if "string" == type flow -- channel:get_latency_live("OUT")
+        @_info\GetLatency flow
+
+    get_latency: (flow) =>
+        flow = env.enums.FLOW[flow] if "string" == type flow
+        @_info\GetAvgLatency flow
+    get_loss: (flow) =>
+        flow = env.enums.FLOW[flow] if "string" == type flow
+        @_info\GetAvgLoss flow
+    get_choke: (flow) =>
+        flow = env.enums.FLOW[flow] if "string" == type flow
+        @_info\GetAvgChoke flow
+    get_packets: (flow) =>
+        flow = env.enums.FLOW[flow] if "string" == type flow
+        @_info\GetAvgPackets flow
+    get_data: (flow) =>
+        flow = env.enums.FLOW[flow] if "string" == type flow
+        @_info\GetAvgData flow
+    get_data_total: (flow) =>
+        flow = env.enums.FLOW[flow] if "string" == type flow
+        @_info\GetTotalData flow
+
+class Bind
+    new: (@_bind) =>
+    __call: => @_bind
+
+    get_name: => @_bind\GetName!
+    get_value: => @_bind\GetValue!
+    is_active: => @_bind\IsActive!
+
+class CheatVar
+    new: (@_var) =>
+    __call: => @_var
+
+    get_bool: (element_index) => @_var\GetBool element_index
+    get_int: => @_var\GetInt!
+    get_float: => @_var\GetFloat!
+    get_string: => @_var\GetString!
+    get_color: => Color @_var\GetColor!
+    get_list: => @_var\GetList!
+    set_bool: (element_index, value) => @_var\SetBool element_index, value
+    set_int: (value) => @_var\SetInt value
+    set_float: (value) => @_var\SetFloat value
+    set_string: (string) => @_var\SetString string
+    set_color: (color) => @_var\SetColor color!
+    set_list: (items) => @_var\UpdateList items  -- why do they use a different verb here?
+    set_tooltip: (tooltip) => @_var\SetTooltip tooltip
+
+    destroy: => api.menu.DestroyItem @_var
+
+class BeamInfo
+    @_mapping = {
+        type: "m_nType"
+        start_entity: "m_pStartEnt"
+        start_attachment: "m_pStartAttachment"
+        end_entity: "m_pEndEnt"
+        end_attachment: "m_pEndAttachment"
+        start: "m_vecStart"
+        start_radius: "m_flStartRadius"
+        end: "m_vecEnd"
+        end_radius: "m_flEndRadius"
+        center: "m_vecCenter"
+        model_index: "m_nModelIndex"
+        model_name: "m_pszModelName"
+        halo_index: "m_nHaloIndex"
+        halo_name: "m_pszHaloName"
+        halo_scale: "m_flHaloScale"
+        life: "m_flLife"
+        width: "m_flWidth"
+        width_end: "m_flEndWidth"
+        fadelength: "m_flFadeLength"
+        amplitude: "m_flAmplitude"
+        brightness: "m_flBrightness"
+        speed: "m_flSpeed"
+        startframe: "m_nStartFrame"
+        framerate: "m_flFrameRate"
+        red: "m_flRed" -- TODO: color
+        green: "m_flGreen"
+        blue: "m_flBlue"
+        renderable: "m_bRenderable"
+        segments: "m_nSegments"
+        flags: "m_nFlags"
+    }
+
+    new: (opt) => @update upt if opt
+    update: (opt) => @[key] = value for key, value in pairs opt
+
+    __call: =>
+        info = api.BeamInfo_t.new!
+        for key, value in pairs @_mapping
+            continue if @[key] == nil
+            info[value] = @[key]
+            info[value] = info[value]! if info[value].__class -- gotta convert to native
+        info
+
+-------------------------------------------------------------------------------
+-- Runtime
+-------------------------------------------------------------------------------
+
+-- Enums
+
+env.enums = {
+    -- TODO: weapon ids
+    -- TODO: class id auto fetch
+    CLASSID: Enum {v, k for k, v in pairs {[0]: "CAI_BaseNPC", "CAK47", "CBaseAnimating", "CBaseAnimatingOverlay", "CBaseAttributableItem", "CBaseButton", "CBaseCombatCharacter", "CBaseCombatWeapon", "CBaseCSGrenade", "CBaseCSGrenadeProjectile", "CBaseDoor", "CBaseEntity", "CBaseFlex", "CBaseGrenade", "CBaseParticleEntity", "CBasePlayer", "CBasePropDoor", "CBaseTeamObjectiveResource", "CBaseTempEntity", "CBaseToggle", "CBaseTrigger", "CBaseViewModel", "CBaseVPhysicsTrigger", "CBaseWeaponWorldModel", "CBeam", "CBeamSpotlight", "CBoneFollower", "CBRC4Target", "CBreachCharge", "CBreachChargeProjectile", "CBreakableProp", "CBreakableSurface", "CBumpMine", "CBumpMineProjectile", "CC4", "CCascadeLight", "CChicken", "CColorCorrection", "CColorCorrectionVolume", "CCSGameRulesProxy", "CCSPlayer", "CCSPlayerResource", "CCSRagdoll", "CCSTeam", "CDangerZone", "CDangerZoneController", "CDEagle", "CDecoyGrenade", "CDecoyProjectile", "CDrone", "CDronegun", "CDynamicLight", "CDynamicProp", "CEconEntity", "CEconWearable", "CEmbers", "CEntityDissolve", "CEntityFlame", "CEntityFreezing", "CEntityParticleTrail", "CEnvAmbientLight", "CEnvDetailController", "CEnvDOFController", "CEnvGasCanister", "CEnvParticleScript", "CEnvProjectedTexture", "CEnvQuadraticBeam", "CEnvScreenEffect", "CEnvScreenOverlay", "CEnvTonemapController", "CEnvWind", "CFEPlayerDecal", "CFireCrackerBlast", "CFireSmoke", "CFireTrail", "CFish", "CFists", "CFlashbang", "CFogController", "CFootstepControl", "CFunc_Dust", "CFunc_LOD", "CFuncAreaPortalWindow", "CFuncBrush", "CFuncConveyor", "CFuncLadder", "CFuncMonitor", "CFuncMoveLinear", "CFuncOccluder", "CFuncReflectiveGlass", "CFuncRotating", "CFuncSmokeVolume", "CFuncTrackTrain", "CGameRulesProxy", "CGrassBurn", "CHandleTest", "CHEGrenade", "CHostage", "CHostageCarriableProp", "CIncendiaryGrenade", "CInferno", "CInfoLadderDismount", "CInfoMapRegion", "CInfoOverlayAccessor", "CItem_Healthshot", "CItemCash", "CItemDogtags", "CKnife", "CKnifeGG", "CLightGlow", "CMaterialModifyControl", "CMelee", "CMolotovGrenade", "CMolotovProjectile", "CMovieDisplay", "CParadropChopper", "CParticleFire", "CParticlePerformanceMonitor", "CParticleSystem", "CPhysBox", "CPhysBoxMultiplayer", "CPhysicsProp", "CPhysicsPropMultiplayer", "CPhysMagnet", "CPhysPropAmmoBox", "CPhysPropLootCrate", "CPhysPropRadarJammer", "CPhysPropWeaponUpgrade", "CPlantedC4", "CPlasma", "CPlayerPing", "CPlayerResource", "CPointCamera", "CPointCommentaryNode", "CPointWorldText", "CPoseController", "CPostProcessController", "CPrecipitation", "CPrecipitationBlocker", "CPredictedViewModel", "CProp_Hallucination", "CPropCounter", "CPropDoorRotating", "CPropJeep", "CPropVehicleDriveable", "CRagdollManager", "CRagdollProp", "CRagdollPropAttached", "CRopeKeyframe", "CSCAR17", "CSceneEntity", "CSensorGrenade", "CSensorGrenadeProjectile", "CShadowControl", "CSlideshowDisplay", "CSmokeGrenade", "CSmokeGrenadeProjectile", "CSmokeStack", "CSnowball", "CSnowballPile", "CSnowballProjectile", "CSpatialEntity", "CSpotlightEnd", "CSprite", "CSpriteOriented", "CSpriteTrail", "CStatueProp", "CSteamJet", "CSun", "CSunlightShadowControl", "CSurvivalSpawnChopper", "CTablet", "CTeam", "CTeamplayRoundBasedRulesProxy", "CTEArmorRicochet", "CTEBaseBeam", "CTEBeamEntPoint", "CTEBeamEnts", "CTEBeamFollow", "CTEBeamLaser", "CTEBeamPoints", "CTEBeamRing", "CTEBeamRingPoint", "CTEBeamSpline", "CTEBloodSprite", "CTEBloodStream", "CTEBreakModel", "CTEBSPDecal", "CTEBubbles", "CTEBubbleTrail", "CTEClientProjectile", "CTEDecal", "CTEDust", "CTEDynamicLight", "CTEEffectDispatch", "CTEEnergySplash", "CTEExplosion", "CTEFireBullets", "CTEFizz", "CTEFootprintDecal", "CTEFoundryHelpers", "CTEGaussExplosion", "CTEGlowSprite", "CTEImpact", "CTEKillPlayerAttachments", "CTELargeFunnel", "CTEMetalSparks", "CTEMuzzleFlash", "CTEParticleSystem", "CTEPhysicsProp", "CTEPlantBomb", "CTEPlayerAnimEvent", "CTEPlayerDecal", "CTEProjectedDecal", "CTERadioIcon", "CTEShatterSurface", "CTEShowLine", "CTesla", "CTESmoke", "CTESparks", "CTESprite", "CTESpriteSpray", "CTest_ProxyToggle_Networkable", "CTestTraceline", "CTEWorldDecal", "CTriggerPlayerMovement", "CTriggerSoundOperator", "CVGuiScreen", "CVoteController", "CWaterBullet", "CWaterLODControl", "CWeaponAug", "CWeaponAWP", "CWeaponBaseItem", "CWeaponBizon", "CWeaponCSBase", "CWeaponCSBaseGun", "CWeaponCycler", "CWeaponElite", "CWeaponFamas", "CWeaponFiveSeven", "CWeaponG3SG1", "CWeaponGalil", "CWeaponGalilAR", "CWeaponGlock", "CWeaponHKP2000", "CWeaponM249", "CWeaponM3", "CWeaponM4A1", "CWeaponMAC10", "CWeaponMag7", "CWeaponMP5Navy", "CWeaponMP7", "CWeaponMP9", "CWeaponNegev", "CWeaponNOVA", "CWeaponP228", "CWeaponP250", "CWeaponP90", "CWeaponSawedoff", "CWeaponSCAR20", "CWeaponScout", "CWeaponSG550", "CWeaponSG552", "CWeaponSG556", "CWeaponShield", "CWeaponSSG08", "CWeaponTaser", "CWeaponTec9", "CWeaponTMP", "CWeaponUMP45", "CWeaponUSP", "CWeaponXM1014", "CWorld", "CWorldVguiText", "DustTrail", "MovieExplosion", "ParticleSmokeGrenade", "RocketTrail", "SmokeTrail", "SporeExplosion", "SporeTrail"}}
+    HITBOX: Enum {v, k for k, v in pairs {[0]: "GENERIC", "HEAD", "CHEST", "STOMACH", "LEFT_ARM", "RIGHT_ARM", "LEFT_LEG", "RIGHT_LEG", "NECK"}}
+    HITGROUP: Enum {v, k for k, v in pairs {[0]: "HEAD", "NECK", "PELVIS", "BODY", "THORAX", "CHEST", "UPPER_CHEST", "LEFT_TIGH", "RIGHT_TIGH", "LEFT_CALF", "RIGHT_CALF", "LEFT_FOOT", "RIGHT_FOOT", "LEFT_HAND", "RIGHT_HAND", "LEFT_UPPER_ARM", "LEFT_FOREARM", "RIGHT_UPPER_ARM", "RIGHT_FOREARM"}}
+    MATERIALFLAGS: Enum {v, bit.lshift(1, k) for k, v in ipairs {"DEBUG", "NO_DEBUG_OVERRIDE", "NO_DRAW", "USE_IN_FILLRATE_MODE", "VERTEXCOLOR", "VERTEXALPHA", "SELFILLUM", "ADDITIVE", "ALPHATEST", "MULTIPASS", "ZNEARER", "MODEL", "FLAT", "NOCULL", "NOFOG", "IGNOREZ", "DECAL", "ENVMAPSHERE", "NOALPHAMOD", "ENVMAPCAMERASPACE", "BASEALPHAENVMAPMASK", "TRANSLUCENT", "NORMALMAPALPHAENVMAPMASK", "NEEDS_SOFTWARE_SKINNING", "OPAQUETEXTURE", "ENVMAPMODE", "SUPPRESS_DCALS", "HALFLAMBERT", "WIREFRAMEE", "ALLOWALPHATOCOVERAGE", "IGNORE_ALPHA_MODULATION"}}
+    FLOW: Enum OUT: 0, IN: 1, BOTH: 2
+    MISSREASON: Enum HIT: 0, RESOLVER: 1, SPREAD: 2, OCCLUSION: 3, PREDICTION: 4
+    MATTYPES: Enum {n\upper!, n for n in *{"Enemies", "Teammates", "Weapon", "Grenades", "Localplayer", "LocalWeapon", "LocalHands", "Ragdolls"}}
+    ESPNAMES: Enum {n\upper!, n for n in *{"enemies", "mates", "local", "weapon", "grenade"}}
+}
+
+-- Callbacks
+
+do
+    callbacks = {}
+    env.callbacks = {
+        current: nil
+        emit: (name, ...) ->
+            return unless callbacks[name]
+            before = env.callbacks.current
+            env.callbacks.current = name
+            f ... for f, _ in pairs callbacks[name]
+            env.callbacks.current = before
+        register: (name, f) ->
+            callbacks[name] = {} unless callbacks[name]
+            callbacks[name][f] = true
+        unregister: (name, f) ->
+            return false unless callbacks[name]
+            return false unless callbacks[name][f]
+            callbacks[name][f] = nil
+            true
+    }
+
+    for name in *{"draw", "createmove", "prediction", "pre_prediction", "events", "destroy", "frame_stage", "console", "registered_shot", "ragebot_shot", "fire_bullet", "override_view"}
+        api.cheat.RegisterCallback name, (...) -> env.callbacks.emit name, ...
+
+-- Globals
+
+do
+    globals_mapping = {
+        maxclients: "maxClients"
+        sim_ticks: "simTicksThisFrame"
+        savedata: "pSaveData"
+        is_client: "m_bClient"
+        is_remote_client: "m_bRemoteClient"
+    }
+    globals_mapping[key] = key for key in *{"realtime", "framecount", "absoluteframetime", "absoluteframestarttimesddev", "curtime", "frametime", "tickcount", "interval_per_tick", "network_protocol"}
+    env.globals = setmetatable {}, {
+        __index: (name) =>
+            return 1 / api.g_GlobalVars.interval_per_tick if name == "tickrate"
+            api.g_GlobalVars[globals_mapping[name]] if globals_mapping[name]
+    }
+
+-- Client State
+-- not gonna overwrite for now
+
+env.clientstate = api.g_ClientState
+
+-- Render
+
+do
+    beam_wrapper = (f) ->
+        =>
+            @ = BeamInfo @ if not @__class
+            f @!
+    env.render = {
+        beams: {
+            render: beam_wrapper api.g_RenderBeams\DrawBeam
+            points: beam_wrapper api.g_RenderBeams\CreateBeamPoints
+            ring: beam_wrapper api.g_RenderBeams\CreateBeamRing
+            ring_point: beam_wrapper api.g_RenderBeams\CreateBeamRingPoint
+            circle_points: beam_wrapper api.g_RenderBeams\CreateBeamCirclePoints
+        }
+        debug: {
+            box: (origin, mins, max, value, color, duration) -> api.g_DebugOverlay\AddBoxOverlay origin!, mins!, max!, value, color.r, color.g, color.b, color.a, duration
+            sphere: (origin, radius, theta, phi, color, duration) -> api.g_DebugOverlay\AddSphereOverlay origin!, radius, theta, phi, color.r, color.g, color.b, color.a, duration
+            triangle: (p1, p2, p3, color, no_dept_test, duration) -> api.g_DebugOverlay\AddTriangleOverlay p1!, p2!, p3!, color.r, color.g, color.b, color.a, no_dept_test, duration
+            line: (origin, destination, color, no_dept_test, duration) -> api.g_DebugOverlay\AddLineOverlay origin!, destination!, color.r, color.g, color.b, no_dept_test, duration -- no alpha
+            capsule: (origin, destination, radius, color, no_dept_test, duration) -> api.g_DebugOverlay\AddCapsuleOverlay origin!, destination!, radius, color.r, color.g, color.b, color.a, no_dept_test, duration
+        },
+        get_screensize: -> Vector2 api.g_EngineClient\GetScreenSize!
+        get_screenposition: => Vector2 api.g_Render\ScreenPosition @!
+        get_menu_position: -> Vector2 api.g_Render\GetMenuPos!
+        get_menu_size: -> Vector2 api.g_Render\GetMenuSize!
+
+        line: (start, end_, color) -> api.g_Render\Line start!, end_!, color!
+        poly_line: (color, ...) -> api.g_Render\PolyLine color!, unpack [vec! for vec in *{...}]
+        poly_filled: (color, ...) -> api.g_Render\PolyFilled color!, unpack [vec! for vec in *{...}]
+        rectangle: (start, end_, color) -> api.g_Render\Box start!, end_!, color!
+        rectangle_filled: (start, end_, color) -> api.g_Render\BoxFilled start!, end_!, color!
+        gradient_rectangle_filled: (start, end_, topleft, topright, bottomleft, bottomright) -> api.g_Render\GradientBoxFilled start!, end_!, topleft!, topright!, bottomleft!, bottomright!
+        circle: (position, radius, segments, color, width) -> api.g_Render\Circle position!, radius, segments, color!, width
+        circle_filled: (position, radius, segments, color) -> api.g_Render\CircleFilled position!, radius, segments, color!
+        circle_partial: (position, radius, segments, color, start, end_) -> api.g_Render\CirclePart position!, radius, segments, color!, start, end_
+        circle3d: (position, segments, radius, color) -> api.g_Render\Circle3D position!, segments, radius, color!
+        circle3d_filled: (position, segments, radius, color) -> api.g_Render\Circle3DFilled position!, segments, radius, color!
+
+        text: (text, position, color, size, font, outline) -> api.g_Render\Text text, position!, color!, size, font, outline
+        text_size: (text, size, font) -> Vector2 api.g_Render\CalcTextSize text, size, font
+        weapon: (weapon, position, color, size, outline) ->
+            weapon = weapon\get_entityindex! if "table" == type weapon
+            api.g_Render\WeaponIcon weapon, position!, color!, size, outline
+        weapon_size: (weapon, size) ->
+            weapon = weapon\get_entityindex! if "table" == type weapon
+            Vector2 api.g_Render\CalcWeaponIconSize weapon, size
+        font: (name, size) -> api.g_Render\InitFont name, size
+
+        image: (image, position, size, color) ->
+            return api.g_Render\Image image, position!, size!, color! if color
+            api.g_Render\Image image, position!, size!
+        load_image: (image, size) -> api.g_Render\LoadImage image, size!
+        load_image_from_file: (path, size) -> api.g_Render\LoadImageFromFile path, size!
+    }
+
+-- GUI
+
+env.gui = {
+    reference: (...) -> CheatVar api.g_Config\FindVar ...
+
+    switch: (group, name, default, tooltip) -> CheatVar api.menu.Switch group, name, default, tooltip
+    switch_color: (group, name, default_switch, default_color, tooltip) -> CheatVar api.menu.SwitchColor group, name, default_switch, default_color!, tooltip
+    slider_int: (group, name, default, min, max, tooltip) -> CheatVar api.menu.SliderInt group, name, default, min, max, tooltip
+    slider_int_color: (group, name, default_value, min, max, default_color, tooltip) -> CheatVar api.menu.SliderIntColor group, name, default_value, min, max, default_color!, tooltip
+    slider_float: (group, name, default, min, max, tooltip) -> CheatVar api.menu.SliderFloat group, name, default, min, max, tooltip
+    slider_float_color: (group, name, default_value, min, max, default_color, tooltip) -> CheatVar api.menu.SliderFloatColor group, name, default_value, min, max, default_color!, tooltip
+    combo: (group, name, items, default, tooltip) -> CheatVar api.menu.Combo group, name, items, default, tooltip
+    combo_color: (group, name, items, default_value, default_color, tooltip) -> CheatVar api.menu.ComboColor group, name, items, default_value, default_color!, tooltip
+    comob_multi: (group, name, items, default, tooltip) -> CheatVar api.menu.MultiCombo group, name, items, default, tooltip -- TODO: verify default argument
+    text: (group, name, length, default, tooltip) -> CheatVar api.menu.TextBox group, name, length, default, tooltip
+    label: api.menu.Text
+    button: (group, name, tooltip) -> CheatVar api.menu.Button group, name, tooltip
+    color: (group, name, default, tooltip) -> CheatVar api.menu.ColorEdit group, name, default!, tooltip
+
+    destroy: (cheatvar) -> api.menu.DestroyItem cheatvar!
+
+    get_legit_hitbox: =>
+        @ = env.enums.HITGROUP[@] if "string" == type @
+        api.menu.GetLegitHitboState @
+    get_rage_hitbox: =>
+        @ = env.enums.HITGROUP[@] if "string" == type @
+        api.menu.GetRageHitboxState @
+    get_rage_multipoint: =>
+        @ = env.enums.HITGROUP[@] if "string" == type @
+        api.menu.GetRageMultipointState @
+}
+
+-- ConVar
+
+env.convar = {
+    get: => ConVar api.g_CVar\FindVar @
+    register_convar: (name, value, flags, description, callback) -> ConVar api.utils.RegisterConVar name, value, flags, description, => callback ConVar @
+    register_command: (name, flags, description, callback) -> ConVar api.utils.RegisterConCommand name, flags, description, => callback ConVar @
+}
+
+-- Engine
+
+env.engine = {
+    execute_command: (command, unrestrict) ->
+        return api.g_EngineClient\ClientCmd command unless unrestrict
+        api.g_EngineClient\ClientCmdUnrestricted command
+        -- TODO: is it worth exposing g_EngineClient.ExecuteClientCmd ?  (what's the difference?)
+        -- TODO: maybe also expose g_EngineClient.SetRestrictClientCommands  (I dont see the point)
+    
+    get_appid: -> api.g_EngineClient\GetAppId!
+    get_enginebuild: -> api.g_EngineClient\GetEngineBuildNumber!
+    get_directory: -> api.g_EngineClient\GetGameDirectory!
+    get_lasttimestamp: -> api.g_EngineClient\GetLastTimestamp!
+    get_levelname: -> api.g_EngineClient\GetLevelName!
+    get_levelname_short: -> api.g_EngineClient\GetLevelNameShort!
+    get_mapgroup: -> api.g_EngineClient\GetMapGroupName!
+    get_localplayer: -> api.g_EngineClient\GetLocalPlayer!
+    get_maxclients: -> api.g_EngineClient\GetMaxClients!
+    get_channelinfo: -> NetChannelInfo api.g_EngineClient\GetChannelInfo!
+    get_player_id_from_userid: => api.g_EngineClient\GetPlayerForUserId @ -- noice spelling
+    get_player_info: => PlayerInfo api.g_EngineClient\GetPlayerInfo @
+    get_productversion: -> api.g_EngineClient\GetProductVersionString!
+    -- g_EngineClient.GetScreenSize was moved to render
+    get_timescale: -> api.g_EngineClient\GetTimescale!
+    -- g_EngineClient.GetViewAngles was moved to local
+    get_levelleaves: -> api.g_EngineClient\LevelLeafCount!
+
+    is_connected: -> api.g_EngineClient\IsConnected!
+    is_hammer: -> api.g_EngineClient\IsHammerRunning!
+    is_hltv: -> api.g_EngineClient\IsHltv!
+    is_ingame: -> api.g_EngineClient\IsInGame!
+    is_occluded: (min, max) -> api.g_EngineClient\IsOccluded min!, max!
+    is_playingdemo: -> api.g_EngineClient\IsPlayingDemo!
+    is_recordingdemo: -> api.g_EngineClient\IsRecordingDemo!
+    is_taking_screenshot: api.g_EngineClient\IsTakingScreenshot!
+
+    set_blurfade: => api.g_EngineClient\SetBlurFade @
+    set_timescale: => api.g_EngineClient\SetTimescale @
+
+    has_hdr: -> api.g_EngineClient\MapHasHdrLighting!
+    has_hdr_support: -> api.g_EngineClient\SupportsHdr!
+
+    remove_allpaint: -> api.g_EngineClient\RemoveAllPaint!
+
+    take_screenshot: => api.g_EngineClient\WriteScreenshot @
+
+    trace: (start, end_, skip, mask) ->
+        trace = api.g_EngineTrace\TraceRay start!, end_!, skip!, mask
+        trace = {k, trace[v] for k in *{"startpos", "endpos", "plane", "fraction", "contents", "dispFlags", "allsolid", "startsolid", "fractionleftsolid", "hitgroup", "physicsbone", "worldSurfaceIndex", "hit_entity", "hitbox"}}
+        trace.startpos = Vector trace.startpos
+        trace.endpos = Vector trace.endpos
+        trace.hit_entity = Entity trace.hit_entity if trace.hit_entity
+        trace
+}
+
+-- Entities
+
+env.entity = {
+    get_entity: => Entity api.g_EntityList\GetClientEntity @
+    get_entity_from_handle: => Entity api.g_EntityList\GetClientEntityFromHandle @
+    get_entities_by_classid: => [Entity ent for ent in *api.g_EntityList\GetEntitiesByClassID @]
+    get_entities_by_classname: => [Entity ent for ent in *api.g_EntityList\GetEntitiesByClassName @]
+    get_playerresource: -> Entity api.g_EntityList\GetPlayerResource!
+    get_gamerules: -> Entity api.g_EntityList\GetGameRules!
+
+    get_player: => Player api.g_EntityList\GetPlayer @
+    get_player_from_handle: => Player api.g_EntityList\GetPlayerFromHandle @
+    get_players: -> [Player player for player in *api.g_EntityList\GetPlayers!]
+    get_localplayer: -> Player api.g_EntityList\GetLocalPlayer!
+
+    get_weapon: => Weapon api.g_EntityList\GetWeapon @
+    get_weapon_from_handle: => Weapon api.g_EntityList\GetWeaponFromHandle @
+
+    get_number_of_entities: => api.g_EntityList\NumberOfEntities @
+    get_highest_entityindex: -> api.g_EntityList\GetHighestEntityIndex!
+}
+
+-- Material
+
+env.material = {
+    create: (name, vmt, callback) -> Material api.g_MatSystem\CreateMaterial name, vmt, => callback Material @
+    find: (name, group) -> Material api.g_MatSystem\FindMaterial name, group
+
+    first: -> api.g_MatSystem\FirstMaterial!
+    next: => api.g_MatSystem\NextMaterial @
+    get: => Material api.g_MatSystem\GetMaterial @
+
+    override: (type, material, color) ->
+        type = env.enums.MATTYPES[type] if env.enums.MATTYPES[type]
+        return api.g_MatSystem\OverrideMaterial type, material!, color! if color
+        api.g_MatSystem\OverrideMaterial type, material!
+    remove_override: (type, material) ->
+        type = env.enums.MATTYPES[type] if env.enums.MATTYPES[type]
+        api.g_MatSystem\RemoveOverrideMaterial type, material!
+}
+
+-- Panorama
+
+env.panorama = {
+    execute: (code, panel) -> api.g_Panorama\Exec code, panel
+}
+
+-- Input
+
+env.input = {
+    get_mouse: -> Vector2 api.cheat.GetMousePos!
+    is_keydown: api.cheat.IsKeyDown
+}
+
+-- Local
+
+env.local = {
+    get_cheatusername: api.cheat.GetCheatUserName
+    get_binds: -> [ActiveBind bind for bind in *api.cheat.GetBinds!]
+
+    get_viewangles: -> api.g_EngineClient\GetViewAngles!
+    set_viewangles: => api.g_EngineClient\SetViewAngles @!
+
+    create_event: api.cheat.AddEvent
+    create_notification: api.cheat.AddNotify
+}
+
+-- HTTP
+
+env.http = {
+    get: (url, callback) ->
+        return api.http.GetAsync url, callback if callback
+        api.http.Get url
+    post: (url, params, callback) ->
+        return api.http.PostAsync url, params, callback if callback
+        api.http.Post url, params
+}
+
+-- AntiAim
+
+do
+    fake = 0
+    real = 0
+    env.antiaim = {
+        set_real: =>
+            real = @ / 58
+            api.antiaim.OverrideLimit math.abs real
+            api.antiaim.OverrideInverter real < 0
+            api.antiaim.OverrideLBYOffset fake * (real < 0 and -1 or 1)
+        set_fake: =>
+            fake = @ / 58
+            api.antiaim.OverrideLBYOffset fake * (real < 0 and -1 or 1)
+        
+        get_real: -> real
+        get_real_rotation: api.antiaim.GetCurrentRealRotation
+        get_fake: -> fake
+        get_fake_rotation: api.antiaim.GetFakeRotation
+
+        set_pitch: api.antiaim.OverridePitch
+
+        -- TOOD: invertion
+        -- TOOD: maybe expose min/max desync delta? (why tho?)
+    }
+
+-- Exploits
+
+env.exploits = {
+    get_charge: api.exploits.GetCharge
+    allow_charge: => api.exploits.AllowCharge not @
+
+    force_teleport: api.exploits.ForceTeleport
+    force_charge: api.exploits.ForceCharge
+    override_speed: api.exploits.OverrideDoubleTapSpeed
+}
+
+-- Fakelag
+
+env.fakelag = {
+    is_choking: api.fakelag.Choking
+    send: api.fakelag.ForceSend
+    packets_sent: api.fakelag.SentPacket
+    force: api.fakelag.SetState
+}
+
+-- Ragebot
+
+env.ragebot = {
+    override_mindamage: (player, damage) ->
+        player = player\get_entityindex! if "table" == type player
+        api.ragebot.OverrideMinDamage player, damage
+    override_hitchance: (player, hitchance) ->
+        player = player\get_entityindex! if "table" == type player
+        api.ragebot.OverrideHitchance player, hitchance
+
+    ignore: (player) ->
+        player = player\get_entityindex! if "table" == type player
+        api.ragebot.IgnoreTarget player
+
+    force_safety: (player) ->
+        player = player\get_entityindex! if "table" == type player
+        api.ragebot.ForceSafety player
+    force_hitbox_safety: (player, hitbox) ->
+        player = player\get_entityindex! if "table" == type player
+        hitbox = env.enums.HITGROUP[hitbox] if "string" == type hitbox
+        api.ragebot.ForceHitboxSafety player, hitbox
+
+    set_priority: (player, priority) ->
+        player = player\get_entityindex! if "table" == type player
+        api.ragebot.SetTargetPriority player, priority
+    set_hitbox_enabled: (player, hitbox, enabled) ->
+        player = player\get_entityindex! if "table" == type player
+        hitbox = env.enums.HITGROUP[hitbox] if "string" == type hitbox
+        api.ragebot.EnableHitbox player, hitbox, enabled
+    set_hitbox_priority: (player, hitbox, priority) ->
+        player = player\get_entityindex! if "table" == type player
+        hitbox = env.enums.HITGROUP[hitbox] if "string" == type hitbox
+        api.ragebot.SetHitboxPriority player, hitbox, priority
+    set_multipoints_enabled: (player, hitbox, enabld) ->
+        player = player\get_entityindex! if "table" == type player
+        hitbox = env.enums.HITGROUP[hitbox] if "string" == type hitbox
+        api.ragebot.EnableMultipoints player, hitbox, enabled
+}
+
+-- Random
+
+env.random = {
+    seed: api.utils.RandomSeed
+    int: api.utils.Randomint
+    gloat: api.utils.RandomFloat
+}
+
+-- TODO: utils.CreateInterface
+-- TODO: utils.PatternScan
+-- TODO: utils.UnixTime
+
+-- ESP
+
+env.esp = {
+    text: (name, classname, preview, callback) ->
+        classname = env.enums.ESPNAMES[classname] if env.enums.ESPNAMES[classname]
+        api.esp.CustomText name, classname, preview, => callback Entity @
+    bar: (name, classname, callback) ->
+        classname = env.enums.ESPNAMES[classname] if env.enums.ESPNAMES[classname]
+        api.esp.CustomBar name, classname, => callback Entity @
+}
+
+
+setfenv 2, env -- override env of calling function

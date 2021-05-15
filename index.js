@@ -485,4 +485,7 @@ setTimeout(async function() {
     }, builtin_doclinks.lua)
     generate_snippets("csgo/neverlose/v2/docs/globals.md", "csgo/neverlose/v2/snippets.lua.json", "lua", ["lua"]);
     generate_snippets("csgo/neverlose/v2/docs/globals.md", "csgo/neverlose/v2/snippets.moon.json", "moon", ["moonscript", "yuescript"]);
+
+    //   V2 Re:Run
+    await generate_scripts("csgo/neverlose/v2rerun/runtime");
 }, 100);
