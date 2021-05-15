@@ -829,7 +829,7 @@ Fields of a beaminfo instance:
 |  m_vecEnd            |  `:link:Vector`        |   -           |
 |  m_nModelIndex       |  `:link:number`        |   -           |
 |  m_pszModelName      |  `:link:string`        |   -           |
-|  m_nHaloindex        |  `:link:number`        |   -           |
+|  m_nHaloIndex        |  `:link:number`        |   -           |
 |  m_pszHaloName       |  `:link:string`        |   -           |
 |  m_flHaloScale       |  `:link:number`        |   -           |
 |  m_flLife            |  `:link:number`        |   -           |
