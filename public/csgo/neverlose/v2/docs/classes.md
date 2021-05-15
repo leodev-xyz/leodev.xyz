@@ -374,21 +374,21 @@ Returns if the bind is active.
 
 ## **:link:CheatVar**
 
-|                                 |  `:link:CheatVar.GetBool`  |  `:link:CheatVar.GetInt`  |  `:link:CheatVar.GetFloat`  |  `:link:CheatVar.GetColor`  |  `:link:CheatVar.GetString`  |
-| ------------------------------- |:--------------------------:|:-------------------------:|:---------------------------:|:---------------------------:|:----------------------------:|
-|  `:link:menu.Switch`            |             √              |                           |                             |                             |                              |
-|  `:link:menu.SwitchColor`       |             √              |                           |                             |              √              |                              |
-|  `:link:menu.SliderInt`         |                            |             √             |                             |                             |                              |
-|  `:link:menu.SliderIntColor`    |                            |             √             |                             |              √              |                              |
-|  `:link:menu.SliderFloat`       |                            |                           |               √             |                             |                              |
-|  `:link:menu.SliderFloatColor`  |                            |                           |               √             |              √              |                              |
-|  `:link:menu.Combo`             |                            |             √             |                             |                             |                              |
-|  `:link:menu.ComboColor`        |                            |             √             |                             |              √              |                              |
-|  `:link:menu.MultiCombo`        |              √             |                           |                             |                             |                              |
-|  `:link:menu.TextBox`           |                            |                           |                             |                             |               √              |
-|  `:link:menu.Text`              |                            |                           |                             |                             |                              |
-|  `:link:menu.Button`            |                            |                           |                             |                             |                              |
-|  `:link:menu.ColorEdit`         |                            |                           |                             |              √              |                              |
+|                                 |  `:link:CheatVar.GetBool`  |  `:link:CheatVar.GetInt`  |  `:link:CheatVar.GetFloat`  |  `:link:CheatVar.GetColor`  |  `:link:CheatVar.GetString`  |  `:link:CheatVar.GetList`  |
+| ------------------------------- |:--------------------------:|:-------------------------:|:---------------------------:|:---------------------------:|:----------------------------:|:--------------------------:|
+|  `:link:menu.Switch`            |             √              |                           |                             |                             |                              |                            |
+|  `:link:menu.SwitchColor`       |             √              |                           |                             |              √              |                              |                            |
+|  `:link:menu.SliderInt`         |                            |             √             |                             |                             |                              |                            |
+|  `:link:menu.SliderIntColor`    |                            |             √             |                             |              √              |                              |                            |
+|  `:link:menu.SliderFloat`       |                            |                           |               √             |                             |                              |                            |
+|  `:link:menu.SliderFloatColor`  |                            |                           |               √             |              √              |                              |                            |
+|  `:link:menu.Combo`             |                            |             √             |                             |                             |                              |              √             |
+|  `:link:menu.ComboColor`        |                            |             √             |                             |              √              |                              |              √             |
+|  `:link:menu.MultiCombo`        |              √             |                           |                             |                             |                              |              √             |
+|  `:link:menu.TextBox`           |                            |                           |                             |                             |               √              |                            |
+|  `:link:menu.Text`              |                            |                           |                             |                             |                              |                            |
+|  `:link:menu.Button`            |                            |                           |                             |                             |                              |                            |
+|  `:link:menu.ColorEdit`         |                            |                           |                             |              √              |                              |                            |
 
 **:link:CheatVar.GetBool**(self, element_index: `:link:number`?): `:link:boolean`
 
@@ -451,11 +451,13 @@ Overrides the tooltip of this cheat variable.
 
 **:link:CheatVar.UpdateList**(self, items: Array[`:link:string`])
 
-Updates the item list of this combobox.
+Updates the item list of this combobox.  
+For `:link:menu.Combo`, `:link:menu.ComboColor` and `.link:menu.MultiCombo`.
 
 **:link:CheatVar.GetList**(self): Array[`:link:string`]
 
-Returns the item list of this combobox.
+Returns the item list of this combobox.  
+For `:link:menu.Combo`, `:link:menu.ComboColor` and `.link:menu.MultiCombo`.
 
 
 ## **:link:Color**
