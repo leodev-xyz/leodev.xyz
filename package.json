@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "autoprefixer": "^10.3.4",
-    "coffeescript": "^2.5.1",
+    "coffeescript": "^2.6.0",
     "file-size": "^1.0.0",
     "fs-extra": "^10.0.0",
     "handlebars": "^4.7.7",
