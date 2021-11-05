@@ -408,7 +408,7 @@ setTimeout(async function() {
 
     const redirects = new Redirector();
     redirects.addRedirect("/discord", "https://discord.gg/FCnK6xp");
-    redirects.addRedirect("/customsu/discord", "https://discord.gg/X6Ckvauvru")
+    redirects.addRedirect("/customsu/discord", "https://go.leodev.xyz/customsu")
     fs.writeFileSync("dist/_redirects", redirects.export());
 
     (function() { // SCOPE
