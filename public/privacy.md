@@ -31,4 +31,4 @@ Local storage is only available in your browser and never transmitted over the i
 
 If you've any questions, don't hesitate to contact us via email:
 
-leodeveloper@protonmail.com
+<span>priv</span>acy@leodev.xyz
