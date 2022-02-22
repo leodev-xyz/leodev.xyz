@@ -12,7 +12,7 @@
     "autoprefixer": "^10.4.2",
     "coffeescript": "^2.6.1",
     "file-size": "^1.0.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.0.1",
     "handlebars": "^4.7.7",
     "highlight.js": "^11.4.0",
     "luamin": "^1.0.4",
