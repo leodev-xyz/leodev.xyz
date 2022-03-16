@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "autoprefixer": "^10.4.2",
+    "autoprefixer": "^10.4.3",
     "coffeescript": "^2.6.1",
     "file-size": "^1.0.0",
     "fs-extra": "^10.0.1",
