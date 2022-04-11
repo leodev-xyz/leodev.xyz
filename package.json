@@ -14,7 +14,7 @@
     "file-size": "^1.0.0",
     "fs-extra": "^10.0.1",
     "handlebars": "^4.7.7",
-    "highlight.js": "^11.5.0",
+    "highlight.js": "^11.5.1",
     "luamin": "^1.0.4",
     "marked": "^3.0.8",
     "postcss": "^8.4.12",
