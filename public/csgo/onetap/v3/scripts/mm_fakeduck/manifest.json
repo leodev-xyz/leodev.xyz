@@ -1,8 +1,0 @@
-{
-    "name": "Matchmaking Fakeduck",
-    "version": "1.0.0",
-    "description": "mm_fakeduck.md",
-    "files": [
-        "mm_fakeduck.coffee"
-    ]
-}

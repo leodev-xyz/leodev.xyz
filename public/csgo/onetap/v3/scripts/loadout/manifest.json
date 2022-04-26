@@ -1,8 +1,0 @@
-{
-    "name": "Enemy Loadout",
-    "version": "1.0.0",
-    "description": "loadout.md",
-    "files": [
-        "loadout.coffee"
-    ]
-}
