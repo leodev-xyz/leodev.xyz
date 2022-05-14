@@ -2,7 +2,6 @@
 import { ExternalLinkIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 import MetaTags from "@/components/metatags.jsx";
 
@@ -14,7 +13,6 @@ const quicklinks = [
 
 
 export default function Home() {
-    const router = useRouter();
     return (
         <>
             <MetaTags
@@ -90,7 +88,7 @@ export default function Home() {
                     <h2 className="mb-2 text-2xl font-medium underline">
                         Miss the old page?
                     </h2>
-                    <Link href="https://legacy.leodeveloper.pages.dev">
+                    <Link href="https://legacy.leodev.xyz">
                         <a className="w-full --btn --btn-3 --btn-primary sm:w-96 hover:bg-blue-550">
                             Visit the legacy documentation
                             <ExternalLinkIcon className="inline w-6 h-6 ml-2" />
