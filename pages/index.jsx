@@ -217,6 +217,13 @@ export default function Home() {
                     </Link>
                 </Section>
             </div>
+            <p className="flex items-center justify-center mt-12 mb-4">
+                <Link href="/privacy">
+                    <a className="hover:underline --highlight">
+                        Privacy Policy
+                    </a>
+                </Link>
+            </p>
         </>
     )
 }
