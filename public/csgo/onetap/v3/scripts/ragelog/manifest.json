@@ -1,8 +1,0 @@
-{
-    "name": "Ragelog",
-    "version": "1.0.1",
-    "description": "ragelog.md",
-    "files": [
-        "ragelog.coffee"
-    ]
-}

@@ -1,0 +1,327 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    @apply text-white bg-gray-700 overscroll-none;
+    font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+* {
+    @apply focus:outline-none;
+}
+
+.--gradient {
+    @apply text-transparent bg-clip-text;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+.--highlight {
+    @apply font-bold text-gray-300;
+}
+
+.--container {
+    @apply container px-4 mx-auto;
+}
+
+.--btn {
+    @apply flex items-center justify-center transition ease-in-out rounded shadow-sm;
+}
+
+.--btn-0 {
+    @apply px-2.5 py-1.5 text-xs font-medium;
+}
+.--btn-1 {
+    @apply px-3 py-2 text-sm font-medium leading-4;
+}
+.--btn-2 {
+    @apply px-4 py-2 text-sm font-medium;
+}
+.--btn-3 {
+    @apply px-4 py-2 text-base font-medium;
+}
+.--btn-4 {
+    @apply px-6 py-3 text-base font-medium;
+}
+
+.--btn-primary {
+    @apply bg-blue-580 hover:bg-blue-630 disabled:bg-gray-580 disabled:hover:bg-gray-630 disabled:cursor-not-allowed;
+}
+
+.--btn-secondary {
+    @apply text-blue-700 bg-blue-100 hover:bg-blue-200 disabled:bg-gray-580 disabled:hover:bg-gray-200 disabled:text-gray-700 disabled:cursor-not-allowed;
+}
+
+.--btn-neutral {
+    @apply bg-gray-700 border border-gray-550 hover:bg-gray-750 disabled:cursor-not-allowed;
+}
+
+.--btn-success {
+    @apply bg-emerald-580 hover:bg-emerald-630 disabled:bg-gray-580 disabled:hover:bg-gray-630 disabled:cursor-not-allowed;
+}
+
+.--btn-destructive {
+    @apply bg-rose-580 hover:bg-rose-630 disabled:bg-gray-580 disabled:hover:bg-gray-630 disabled:cursor-not-allowed;
+}
+
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-stone-800;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-stone-900;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-stone-500;
+    overflow-x: hidden;
+}
+
+.skeleton {
+    -webkit-animation: animation-skeleton 1.2s ease-in-out infinite;
+    animation: animation-skeleton 1.2s ease-in-out infinite;
+    background-size: 200px 100%;
+}
+@keyframes animation-skeleton {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+article {
+    @apply text-gray-70;
+}
+article h1 {
+    @apply mt-8 text-4xl font-bold leading-tight tracking-tight text-white;
+}
+article h2 {
+    @apply mt-8 text-2xl font-bold leading-tight tracking-tight text-white;
+}
+article h3 {
+    @apply mt-8 text-xl font-bold leading-tight tracking-tight text-white;
+}
+
+article bold {
+    @apply font-bold;
+}
+
+article p {
+    @apply my-2;
+}
+article a {
+    @apply font-bold text-gray-200 underline;
+}
+
+article ul {
+    @apply list-disc list-outside;
+}
+article ol {
+    @apply list-decimal list-outside;
+}
+article :is(ul, ol) > li {
+    @apply mt-4 ml-8;
+}
+
+/*
+Github Markdown for Tailwindcss
+    Original: https://github.com/iandinwoodie/github-markdown-tailwindcss/blob/master/markdown.css
+    License: MIT https://github.com/iandinwoodie/github-markdown-tailwindcss/blob/master/LICENSE
+Small modifications have been made.
+*/
+
+.markdown {
+    @apply leading-normal break-words;
+}
+
+.markdown > * + * {
+    @apply mt-0 mb-4;
+}
+
+.markdown li + li {
+    @apply mt-1;
+}
+
+.markdown li > p + p {
+    @apply mt-6;
+}
+
+.markdown strong {
+    @apply font-semibold;
+}
+
+.markdown a {
+    @apply font-semibold text-blue-400;
+}
+
+.markdown strong a {
+    @apply font-bold;
+}
+
+.markdown h1 {
+    @apply pb-2 mt-6 mb-4 text-4xl font-semibold leading-tight;
+}
+
+.markdown h2 {
+    @apply pb-2 mt-6 mb-4 text-2xl font-semibold leading-tight;
+}
+
+.markdown h3 {
+    @apply mt-6 mb-4 text-lg font-semibold leading-snug;
+}
+
+.markdown h4 {
+    @apply mt-6 mb-4 text-base font-semibold leading-none;
+}
+
+.markdown h5 {
+    @apply mt-6 mb-4 text-sm font-semibold leading-tight;
+}
+
+.markdown h6 {
+    @apply mt-6 mb-4 text-sm font-semibold leading-tight text-gray-400;
+}
+
+.markdown blockquote {
+    @apply pl-4 pr-4 text-base text-gray-400 border-l-4 border-gray-300;
+}
+
+.markdown code {
+    @apply font-mono text-sm inline bg-gray-900 rounded px-1 py-0.5;
+}
+
+.markdown pre {
+    @apply p-4 mt-2 bg-gray-900 rounded;
+}
+
+.markdown pre code {
+    @apply block w-full p-0 overflow-auto bg-transparent rounded-none;
+}
+
+.markdown ul {
+    @apply pl-8 text-base list-disc;
+}
+
+.markdown ol {
+    @apply pl-8 text-base list-decimal;
+}
+
+.markdown kbd {
+    @apply text-xs inline-block rounded border px-1 py-0.5 align-middle font-normal font-mono shadow;
+}
+
+.markdown table {
+    @apply text-base border-gray-600;
+}
+
+.markdown th {
+    @apply px-3 py-1 border;
+}
+
+.markdown td {
+    @apply px-3 py-1 border;
+}
+
+/* Override pygments style background color. */
+.markdown .highlight pre {
+    @apply bg-gray-900 !important;
+}
+
+
+.hljs {
+    @apply block p-2 overflow-auto bg-gray-900;
+}
+
+.hljs,
+.hljs-subst {
+    @apply text-gray-200;
+}
+  
+.hljs-comment {
+    @apply text-gray-400;
+}
+
+.hljs-keyword,
+.hljs-attribute,
+.hljs-selector-tag,
+.hljs-meta-keyword,
+.hljs-doctag,
+.hljs-name {
+    @apply font-semibold;
+}
+
+
+.hljs-type,
+.hljs-string,
+.hljs-number,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-quote,
+.hljs-template-tag,
+.hljs-deletion {
+    @apply text-red-400;
+}
+
+.hljs-title,
+.hljs-section {
+    @apply font-bold text-red-600;
+}
+
+.hljs-regexp,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+    @apply text-red-400;
+}
+
+
+/* Language color: hue: 90; */
+
+.hljs-literal {
+    @apply text-green-600;
+}
+
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code,
+.hljs-addition {
+    @apply text-green-400;
+}
+
+
+/* Meta color: hue: 200 */
+
+.hljs-meta {
+    @apply text-red-800;
+}
+
+.hljs-meta-string {
+    @apply text-indigo-500;
+}
+
+
+/* Misc effects */
+
+.hljs-emphasis {
+    @apply italic;
+}
+
+.hljs-strong {
+    @apply font-semibold;
+}

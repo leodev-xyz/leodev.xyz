@@ -1,8 +1,0 @@
-{
-    "name": "Dump Globals",
-    "version": "1.0.0",
-    "description": "dump_globals.md",
-    "files": [
-        "dump_globals.coffee"
-    ]
-}
