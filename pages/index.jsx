@@ -101,7 +101,7 @@ export default function Home() {
             <div className="py-20 space-y-8">
                 <Section name="Counter-Strike: Global Offensive" id="csgo">
                     <p>
-                        I started playing CS:GO in 2019 and really enjoy cheating in it.
+                        I started playing CS:GO in late 2018 and really enjoy cheating in it.
                         So this section will be very cheating related.
                     </p>
                     {/* <h3 className="mt-8 text-lg font-bold">
@@ -154,9 +154,21 @@ export default function Home() {
                         CustomSU
                     </h3>
                     <p className="text-gray-200">
-                        A project of mine that enabled the usage of LauncherSU outside of China.
-                        The project is discontinued.
+                        A project of mine that enabled the usage of LauncherSU outside of China.{" "}
+                        <b>This project is discontinued.</b>
                     </p>
+                    <h3 className="mt-8 text-lg font-bold">
+                        cslua
+                    </h3>
+                    <p className="text-gray-200">
+                        A lua loader for CS:GO which is still in early development.
+                        Name is subject to change.
+                    </p>
+                    <Link href="https://github.com/le0developer/csgo-lua">
+                        <a className="--highlight hover:underline">
+                            Github repo for people who have access
+                        </a>
+                    </Link>
                 </Section>
                 <Section name="Discord" id="discord">
                     <p>
