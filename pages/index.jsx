@@ -97,6 +97,13 @@ export default function Home() {
                 </div>
             </div>
             <div className="py-20 space-y-8">
+                <Section name="Steam Account Generator Enhanced" id="sage">
+                    <Link href="https://sage.leodev.xyz">
+                        <a className="hover:underline --highlight">
+                            Website
+                        </a>
+                    </Link>
+                </Section>
                 <Section name="Counter-Strike: Global Offensive" id="csgo">
                     <p>
                         I started playing CS:GO in late 2018 and really enjoy cheating in it.
